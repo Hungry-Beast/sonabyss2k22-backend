@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const EventSchema = new Schema(
+const ClubSchema = new Schema(
   {
     name: {
       type: String,
       required: true,
       unique,
     },
-    date: {
-      type: String,
-      required,
-    },
-    club: {
-      type: String,
-      required,
-    },
+
     image: {
+      type: String,
+      required,
+    },
+    desc: {
       type: String,
       required,
     },
@@ -25,4 +22,4 @@ const EventSchema = new Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Event", EventSchema);
+module.exports = mongoose.model("Club", ClubSchema);
