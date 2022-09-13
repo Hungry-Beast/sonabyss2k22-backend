@@ -6,7 +6,6 @@ const RegisterSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique,
     },
     regNo: {
       type: String,
@@ -23,7 +22,17 @@ const RegisterSchema = new Schema(
       required,
     },
     club: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Club",
+      required,
+    },
+    clubName: {
       type: String,
+      required,
+    },
+    eventId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
       required,
     },
     eventName: {

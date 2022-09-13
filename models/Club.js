@@ -6,16 +6,19 @@ const ClubSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique,
+      unique:true,
     },
-
     image: {
       type: String,
-      required,
+      required:true,
     },
     desc: {
       type: String,
-      required,
+      required:true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {

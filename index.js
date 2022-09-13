@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+require('./firebaseAuth')
 const mongoConnect = require("./db");
+const Club = require("./routes/Club");
 mongoConnect();
 app.use(cors());
 

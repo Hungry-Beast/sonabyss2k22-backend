@@ -13,10 +13,15 @@ const EventSchema = new Schema(
       required,
     },
     club: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Club",
       required,
     },
     image: {
+      type: String,
+      required,
+    },
+    desc: {
       type: String,
       required,
     },
