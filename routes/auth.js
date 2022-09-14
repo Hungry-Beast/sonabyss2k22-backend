@@ -6,12 +6,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchuser')
 
-const JWT_SECRET = "paulisagoodboy"
-//ROUTE1: Creating a user using POST request to api/auth/crateUser. No login required
+const JWT_SECRET = process.env.JWT_SECRET;
+//ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
 router.post('/createUser', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),//message(2nd part of body) is shown if min length is less than 3
-    body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
+    body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }),
 ], async (req, res) => {
     let success = false
     //if there are errors return Bad Request and the errors
@@ -19,18 +19,19 @@ router.post('/createUser', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ success, errors: errors.array() });
     }
-    //Checks if the user with same email exists already
+    //Checks if the user with same regNo exists already
     try {
-        let user = await User.findOne({ email: req.body.email })
+        let user = await User.findOne({ regNo: req.body.regNo })
         if (user) {
-            return res.status(400).json({ success, error: "Opps! An user with this email already exists." })
+            return res.status(400).json({ success, error: "Opps! An user with this regNo already exists." })
         }
         const salt = await bcrypt.genSalt(10);
         const secPassword = await bcrypt.hash(req.body.password, salt)
         user = await User.create({
             name: req.body.name,
             password: secPassword,
-            email: req.body.email,
+            phoneNo: req.body.phoneNo,
+            regNo: req.body.regNo,
         })
         const data = {
             user: {
@@ -52,7 +53,7 @@ router.post('/createUser', [
 })
 //ROUTE2: Authenticate a user using POST: api/auth/login . No login required
 router.post('/login',
-    [body('email', 'Enter a valid email').isEmail(),
+    [body('regNo', 'Enter a valid Registration Number').exists(),
     body('password', "Password cannot be blank").exists()],
     async (req, res) => {
         let success = false
@@ -60,8 +61,8 @@ router.post('/login',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { email, password } = req.body;
-        const user = await User.findOne({ email })
+        const { regNo, password } = req.body;
+        const user = await User.findOne({ regNo })
         try {
             if (!user) {
                 return res.status(400).json({ success, error: "Please enter correct credentials!" });

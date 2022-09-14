@@ -10,9 +10,11 @@ app.use("/clubs", Club);
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/", (req, res) => {
-  res.send("I am listening");
-});
+// app.use("/", (req, res) => {
+//   res.send("I am listening");
+// });
+app.use(express.json())
+app.use('/api/auth', require('./routes/auth'))
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
