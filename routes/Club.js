@@ -7,6 +7,7 @@ const {
   uploadBytes,
   getDownloadURL,
 } = require("firebase/storage");
+const storage = getStorage();
 
 const Club = require("../models/Club");
 
@@ -26,6 +27,7 @@ router.post("/", multer().single("file"), async (req, res) => {
       name: req.body.name,
       image: downloadUrl,
       desc: req.body.desc,
+      createdBy:"hi"
     });
     res.json(ClubData);
   } catch (error) {
@@ -33,3 +35,5 @@ router.post("/", multer().single("file"), async (req, res) => {
     res.status(500).send("Internal server error!");
   }
 });
+
+module.exports = router;
