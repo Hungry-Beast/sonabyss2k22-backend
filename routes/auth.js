@@ -9,14 +9,16 @@ const fetchuser = require('../middleware/fetchuser')
 const JWT_SECRET = process.env.JWT_SECRET;
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
 router.post('/createUser', [
-    body('name', 'Enter a valid name').isLength({ min: 3 }),//message(2nd part of body) is shown if min length is less than 3
+    body('name', 'Enter a valid name').isLength({ min: 3 }),
     body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
     body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }),
 ], async (req, res) => {
     let success = false
-    //if there are errors return Bad Request and the errors
+    
     const errors = validationResult(req);
+    console.log(req.body.name)
     if (!errors.isEmpty()) {
+        console.log("hi")
         return res.status(400).json({ success, errors: errors.array() });
     }
     //Checks if the user with same regNo exists already

@@ -21,6 +21,13 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    userType: {
+      type: String,
+      default: "s",
+    },
+    registeration: {
+      type: [],
+    },
   },
   {
     timestamps: true,

@@ -6,11 +6,11 @@ const EventSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique,
+      unique: true,
     },
     date: {
       type: String,
-      required,
+      required: true,
     },
     time: {
       type: String,
@@ -19,19 +19,23 @@ const EventSchema = new Schema(
     club: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Club",
-      required,
+      required: true,
     },
     clubName: {
       type: String,
-      required,
+      required: true,
     },
     image: {
       type: String,
-      required,
+      required: true,
     },
     desc: {
       type: String,
-      required,
+      required: true,
+    },
+    user: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+      default:[]
     },
   },
   {

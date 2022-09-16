@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv/config");
-mongoose_URI = process.env.DB_KEY;
+mongoose_URI = process.env.LOCAL_DB_KY;
 mongoConnect = async () => {
 //   console.log("hi");
   try {
@@ -9,6 +9,7 @@ mongoConnect = async () => {
     });
   } catch (error) {
     console.error();
+    console.log("hi")
   }
 };
 module.exports = mongoConnect;

@@ -9,39 +9,37 @@ const RegisterSchema = new Schema(
     },
     regNo: {
       type: String,
-      required: true,
-      unique: true,
+      required: true
     },
     phoneNo: {
       type: Number,
-      required: true,
-      unique: true,
+      required: true
     },
     date: {
       type: String,
-      required,
+      required:true,
     },
     club: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Club",
-      required,
+      required:true,
     },
     clubName: {
       type: String,
-      required,
+      required:true,
     },
     eventId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
-      required,
+      required:true,
     },
     eventName: {
       type: String,
-      required,
+      required:true,
     },
   },
   {
     timestamps: true,
   }
 );
-module.exports = mongoose.model("Event", UserSchema);
+module.exports = mongoose.model("Register", RegisterSchema);
