@@ -9,8 +9,8 @@ const UserSchema = new Schema(
     },
     regNo: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true
     },
     phoneNo: {
       type: Number,

@@ -14,18 +14,18 @@ router.post('/createUser', [
     body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }),
 ], async (req, res) => {
     let success = false
-    
+
     const errors = validationResult(req);
-    console.log(req.body.name)
     if (!errors.isEmpty()) {
-        console.log("hi")
         return res.status(400).json({ success, errors: errors.array() });
     }
     //Checks if the user with same regNo exists already
     try {
-        let user = await User.findOne({ regNo: req.body.regNo })
+
+        let { regNo, phoneNo } = req.body
+        let user = await User.findOne({ phoneNo })
         if (user) {
-            return res.status(400).json({ success, error: "Opps! An user with this regNo already exists." })
+            return res.status(400).json({ success, error: "Opps! user already exists." })
         }
         const salt = await bcrypt.genSalt(10);
         const secPassword = await bcrypt.hash(req.body.password, salt)
@@ -33,7 +33,8 @@ router.post('/createUser', [
             name: req.body.name,
             password: secPassword,
             phoneNo: req.body.phoneNo,
-            regNo: req.body.regNo,
+            regNo,
+            userType: req.body.userType
         })
         const data = {
             user: {
@@ -90,11 +91,38 @@ router.post('/login',
         }
 
     })
-//ROUTE3:get logged in user details using POST: api/auth/getuser. Login Required
+//ROUTE3: get the details of the loggen in user using POST: api/auth/getuser. Login Required
 router.post('/getuser', fetchuser, async (req, res) => {
     try {
         userId = req.user.id;
         const user = await User.findById(userId).select('-password')
+        res.send(user);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Internal error occured")
+    }
+}
+)
+//ROUTE4: get logged in user details using POST: api/auth/getuser. Login Required
+router.post('/getallothers', fetchuser, async (req, res) => {
+    try {
+        userId = req.user.id;
+        const user = await User.find({ userType: 'o' }).select("-password")
+        res.send(user);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Internal error occured")
+    }
+}
+)
+
+// get the details of all users in the db
+router.post('/getalluser', fetchuser, async (req, res) => {
+    try {
+        userId = req.user.id;
+        const user = await User.find().select("-password")
         res.send(user);
 
     } catch (err) {
