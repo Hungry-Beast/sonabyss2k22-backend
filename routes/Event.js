@@ -38,6 +38,11 @@ router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
       clubName: req.body.clubName,
       image: downloadUrl,
       desc: req.body.desc,
+      date: req.body.date,
+      time: req.body.time,
+      duration:req.body.duration,
+      venue: req.body.venue,
+      isOpen: req.body.isOpen,
     });
     res.json(EventData);
   } catch (error) {

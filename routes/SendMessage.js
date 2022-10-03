@@ -1,23 +1,33 @@
 const express = require("express");
 
 const router = express.Router();
+const wbm = require("wbm");
+const Register = require("../models/Register");
 
 const accountSid = "ACbeea18e2dff0b5a8cd5444abc090c07e";
 const authToken = "[Redacted]";
 const client = require("twilio")(accountSid, authToken);
 
-router.post("/", (req, res) => {
-  const accountSid = "ACbeea18e2dff0b5a8cd5444abc090c07e";
-  const authToken = "d6f6b8f8209bda6bb54ff0607e299382";
-  const client = require("twilio")(accountSid, authToken);
-
-  client.messages
-    .create({
-      body: "Hello! This is an editable text message. You are free to change it and write whatever you like.",
-      from: "whatsapp:+14155238886",
-      to: "whatsapp:+918486919537",
+router.post("/:id", async (req, res) => {
+  const registeration = await Register.find({ eventId: req.params.id });
+  // console.log(registeration);
+  let contacts = [];
+  registeration.map((re) => {
+    contacts.push({
+      phone: "91" + re.phoneNo,
+      name: re.name,
+    });
+  });
+  console.log(contacts)
+  wbm
+    .start()
+    .then(async () => {
+      const phones = ["919365722389"];
+      const message = "Ki hoi asa o";
+      await wbm.send(contacts, message);
+      await wbm.end();
+      res.status(200).send("Message sent successfully");
     })
-    .then((message) => console.log(message.sid))
-    .done();
+    .catch((err) => console.log(err));
 });
 module.exports = router;

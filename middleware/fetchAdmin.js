@@ -4,6 +4,7 @@ const User = require("../models/User");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const fetchuser = async (req, res, next) => {
+  console.log("hi")
   // get the user from the jwt token and add to the req object
   const bearerToken = req.header("Authorization");
   const token = bearerToken.split(" ")[1];
@@ -14,11 +15,12 @@ const fetchuser = async (req, res, next) => {
   try {
     const data = jwt.verify(token, JWT_SECRET); //verify and get the user
     const user = await User.findById(data.user.id);
+    console.log(user)
     if (user.userType === "a") {
       req.user = data.user;
       next();
     } else {
-      res.status(403).send({ error: "Please use a admin account" });
+      res.status(403).json({ error: "Please use a admin account" });
     }
     // The next() function is not a part of the Node.js or Express API but is the third argument that is passed to the middleware function. This means that the async (req, res) will be called after getting the user in the ‘getuser’ route.
   } catch (error) {

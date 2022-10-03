@@ -38,6 +38,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
 });
 router.get("/", async (req, res) => {
   const clubs = await Club.find();
+  
   res.json(clubs);
 });
 

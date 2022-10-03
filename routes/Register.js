@@ -7,6 +7,8 @@ const User = require("../models/User");
 
 const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+const pdfMake = require("pdfmake/build/pdfmake.js");
+const pdfFonts = require("pdfmake/build/vfs_fonts.js");
 // const fetchuser = require("../middleware/fetchuser");
 
 router.post("/", fetchUser, async (req, res) => {
@@ -38,5 +40,39 @@ router.get("/:id", fetchAdmin, async (req, res) => {
     const registeration = await Register.find({ eventId: req.params.id });
     res.json(registeration);
   } catch (error) {}
+});
+
+router.get("/getPdf/:id", fetchAdmin, async (req, res) => {
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+  const employees = [
+    { firstName: "John", lastName: "Doe" },
+    { firstName: "Anna", lastName: "Smith" },
+    { firstName: "Peter", lastName: "Jones" },
+  ];
+  const document = {
+    content: [{ text: "Employees", fontStyle: 15, lineHeight: 2 }],
+  };
+  employees.forEach((employee) => {
+    document.content.push({
+      columns: [
+        { text: "firstname", width: 60 },
+        { text: ":", width: 10 },
+        { text: employee.firstName, width: 50 },
+        { text: "lastName", width: 60 },
+        { text: ":", width: 10 },
+        { text: employee.lastName, width: 50 },
+      ],
+      lineHeight: 2,
+    });
+  });
+  // pdfMake.createPdf(document).download();
+  const pdfDocGenerator = pdfMake.createPdf(document);
+  pdfDocGenerator.getBuffer((blob) => {
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "inline;filename=yolo.pdf");
+    // res.contentType("application/pdf");
+    res.send(blob);
+  });
 });
 module.exports = router;
