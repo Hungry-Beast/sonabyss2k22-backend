@@ -29,5 +29,5 @@ router.post("/:id", async (req, res) => {
       res.status(200).send("Message sent successfully");
     })
     .catch((err) => console.log(err));
-});
+}); ``
 module.exports = router;
