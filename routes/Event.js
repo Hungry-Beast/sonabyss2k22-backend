@@ -17,7 +17,7 @@ const { async } = require("@firebase/util");
 router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
   try {
     if (!req.file) {
-      res.send("Please insert a image");
+      res.status(206).send("Please insert a image");
       return;
     }
     let metadata = {
@@ -40,7 +40,7 @@ router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
       desc: req.body.desc,
       date: req.body.date,
       time: req.body.time,
-      duration:req.body.duration,
+      duration: req.body.duration,
       venue: req.body.venue,
       isOpen: req.body.isOpen,
     });
@@ -54,9 +54,17 @@ router.get("/", async (req, res) => {
   const events = await Event.find();
   res.json(events);
 });
+
+router.get("/noAuth/:id", async (req, res) => {
+  const id = req.params.id;
+  const events = await Event.find({ club: id });
+  res.status(200).json(events);
+});
+
 router.get("/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
   const id = req.params.id;
+  const outsider = req.user.type === "o";
   const events = await Event.find({ club: id });
   const resEvents = [];
   events.map((event) => {
@@ -72,9 +80,11 @@ router.get("/:id", fetchuser, async (req, res) => {
       isRegistered: event.user.includes(req.user.id),
       clubName: event.clubName,
       club: event.club,
+      disabled: outsider && !event.isOpen ? true : false,
     });
   });
   res.json(resEvents);
 });
+
 
 module.exports = router;
