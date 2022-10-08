@@ -50,6 +50,13 @@ const EventSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    price: {
+      type: String,
+    },
   },
   {
     timestamps: true,

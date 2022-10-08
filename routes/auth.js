@@ -62,10 +62,7 @@ router.post(
 //ROUTE2: Authenticate a user using POST: api/auth/login . No login required
 router.post(
   "/login",
-  [
-    body("regNo", "Enter a valid Registration Number"),
-    body("password", "Password cannot be blank").exists(),
-  ],
+  [body("password", "Password cannot be blank").exists()],
   async (req, res) => {
     let success = false;
     const errors = validationResult(req);
@@ -74,11 +71,11 @@ router.post(
     }
     const { regNo, password, phoneNo } = req.body;
     const obj = regNo ? { regNo: regNo } : { phoneNo: phoneNo };
-    console.log(obj);
+    // console.log(obj);
     const user = await User.findOne(obj);
-    console.log(user);
+    // console.log(user);
     try {
-      console.log(JWT_SECRET);
+      // console.log(JWT_SECRET);
       if (!user) {
         return res
           .status(400)
@@ -87,12 +84,10 @@ router.post(
       const passwordCompare = await bcrypt.compare(password, user.password);
 
       if (!passwordCompare) {
-        return res
-          .status(400)
-          .json({
-            success,
-            error: "Please try to login with correct credentials",
-          });
+        return res.status(400).json({
+          success,
+          error: "Please try to login with correct credentials",
+        });
       }
       const data = {
         user: {

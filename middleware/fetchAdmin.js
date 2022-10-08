@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const fetchuser = async (req, res, next) => {
-  console.log("hi")
+  // console.log("hi")
   // get the user from the jwt token and add to the req object
   const bearerToken = req.header("Authorization");
   const token = bearerToken.split(" ")[1];
@@ -15,7 +15,7 @@ const fetchuser = async (req, res, next) => {
   try {
     const data = jwt.verify(token, JWT_SECRET); //verify and get the user
     const user = await User.findById(data.user.id);
-    console.log(user)
+    // console.log(user)
     if (user.userType === "a") {
       req.user = data.user;
       next();

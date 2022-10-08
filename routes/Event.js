@@ -11,10 +11,11 @@ const storage = getStorage();
 
 const Event = require("../models/Event");
 const fetchuser = require("../middleware/fetchuser");
+const fetchAdmin = require("../middleware/fetchAdmin");
 const { async } = require("@firebase/util");
 // const { events } = require("../models/Event");
 
-router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
+router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
   try {
     if (!req.file) {
       res.status(206).send("Please insert a image");
@@ -29,7 +30,7 @@ router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
     const storageRef = ref(storage, `${req.file.originalname}`);
     const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
     const downloadUrl = await getDownloadURL(snapshot.ref);
-    console.log("hi");
+    // console.log("hi");
     const EventData = await Event.create({
       name: req.body.name,
       date: req.body.date,
@@ -43,7 +44,9 @@ router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
       duration: req.body.duration,
       venue: req.body.venue,
       isOpen: req.body.isOpen,
-      createdBy:req.user.id
+      createdBy: req.user.id,
+      isPaid: req.body.isPaid,
+      price: req.body.price ? req.body.price : "",
     });
     res.json(EventData);
   } catch (error) {
@@ -82,10 +85,28 @@ router.get("/:id", fetchuser, async (req, res) => {
       clubName: event.clubName,
       club: event.club,
       disabled: outsider && !event.isOpen ? true : false,
+      isPaid:event.isPaid,
     });
   });
   res.json(resEvents);
 });
 
+router.put("/delete/:id", fetchAdmin, async (req, res) => {
+  try {
+    let isDeleted = await Event.findByIdAndDelete(req.params.id);;
+    // console.log(req.params.id)
+    
+    
+    // console.log(isDeleted);
+    if (isDeleted) {
+      res.status(200).send("Event deleted....!");
+    } else {
+      res.status(404).send("Event not found");
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(404).send("Event not found...");
+  }
+});
 
 module.exports = router;

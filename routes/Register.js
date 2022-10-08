@@ -13,6 +13,19 @@ const pdfFonts = require("pdfmake/build/vfs_fonts.js");
 
 router.post("/", fetchUser, async (req, res) => {
   try {
+    let downloadUrl;
+    if (req.file) {
+      let metadata = {
+        contentType: req.file.mimetype,
+        name: req.file.originalname,
+      };
+      // storage.put(req.file.buffer, metadata);
+      // }
+      const storageRef = ref(storage, `${req.file.originalname}`);
+      const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
+      downloadUrl = await getDownloadURL(snapshot.ref);
+    }
+
     const userData = await User.findById(req.user.id);
     const event = await Event.findById(req.body.eventId);
     if (event.user.includes(req.user.id)) {
@@ -27,6 +40,7 @@ router.post("/", fetchUser, async (req, res) => {
       clubName: req.body.clubName,
       eventId: req.body.eventId,
       eventName: req.body.eventName,
+      screenshot: downloadUrl,
     });
 
     event.user.push(req.user.id);
@@ -45,37 +59,19 @@ router.get("/:id", fetchAdmin, async (req, res) => {
   } catch (error) {}
 });
 
-router.get("/getPdf/:id", fetchAdmin, async (req, res) => {
-  pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-  const employees = [
-    { firstName: "John", lastName: "Doe" },
-    { firstName: "Anna", lastName: "Smith" },
-    { firstName: "Peter", lastName: "Jones" },
-  ];
-  const document = {
-    content: [{ text: "Employees", fontStyle: 15, lineHeight: 2 }],
-  };
-  employees.forEach((employee) => {
-    document.content.push({
-      columns: [
-        { text: "firstname", width: 60 },
-        { text: ":", width: 10 },
-        { text: employee.firstName, width: 50 },
-        { text: "lastName", width: 60 },
-        { text: ":", width: 10 },
-        { text: employee.lastName, width: 50 },
-      ],
-      lineHeight: 2,
-    });
+router.put("/verify/:id", fetchAdmin, async (req, res) => {
+  const isVerified = await Register.findByIdAndUpdate(req.params.id, {
+    verifiedBy: req.user.id,
+    verifiedDate: req.body.date,
+    isVerified: req.body.isVerified,
   });
-  // pdfMake.createPdf(document).download();
-  const pdfDocGenerator = pdfMake.createPdf(document);
-  pdfDocGenerator.getBuffer((blob) => {
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "inline;filename=yolo.pdf");
-    // res.contentType("application/pdf");
-    res.send(blob);
-  });
+  console.log(isVerified)
+  if(isVerified){
+    res.status(202).send("Payment verified...!")
+  }
+  else{
+    res.status(402).send("Payment not verified")
+  }
 });
+
 module.exports = router;
