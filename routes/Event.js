@@ -43,6 +43,7 @@ router.post("/", [fetchuser, multer().single("file")], async (req, res) => {
       duration: req.body.duration,
       venue: req.body.venue,
       isOpen: req.body.isOpen,
+      createdBy:req.user.id
     });
     res.json(EventData);
   } catch (error) {

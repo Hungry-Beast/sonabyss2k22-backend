@@ -14,6 +14,10 @@ const pdfFonts = require("pdfmake/build/vfs_fonts.js");
 router.post("/", fetchUser, async (req, res) => {
   try {
     const userData = await User.findById(req.user.id);
+    const event = await Event.findById(req.body.eventId);
+    if (event.user.includes(req.user.id)) {
+      return res.status(403).send("Already resgistered to this event");
+    }
     const register = await Register.create({
       name: userData.name,
       regNo: userData.regNo,
@@ -24,8 +28,7 @@ router.post("/", fetchUser, async (req, res) => {
       eventId: req.body.eventId,
       eventName: req.body.eventName,
     });
-    const event = await Event.findById(req.body.eventId);
-    // console.log(event);
+
     event.user.push(req.user.id);
     await event.save();
     res.json(register);

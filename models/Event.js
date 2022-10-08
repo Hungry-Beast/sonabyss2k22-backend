@@ -39,12 +39,16 @@ const EventSchema = new Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
     },
-    duration:{
-      type:String
+    duration: {
+      type: String,
     },
     isOpen: {
       type: Boolean,
       default: false,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
     },
   },
   {
