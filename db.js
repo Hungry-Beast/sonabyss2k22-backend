@@ -8,7 +8,7 @@ mongoConnect = async () => {
       console.log("Connected to mongo Successfully!");
     });
   } catch (error) {
-    console.error();
+    console.log(error);
     console.log("hi")
   }
 };

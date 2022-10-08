@@ -9,33 +9,51 @@ const RegisterSchema = new Schema(
     },
     regNo: {
       type: String,
-      required: true
+      required: true,
     },
     phoneNo: {
       type: Number,
-      required: true
+      required: true,
     },
     date: {
       type: String,
-      required:true,
+      required: true,
     },
     club: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Club",
-      required:true,
+      required: true,
     },
     clubName: {
       type: String,
-      required:true,
+      required: true,
     },
     eventId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
-      required:true,
+      required: true,
     },
     eventName: {
       type: String,
-      required:true,
+      required: true,
+    },
+    screenshot: {
+      type: String,
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    verifiedDate: {
+      type: String,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   {

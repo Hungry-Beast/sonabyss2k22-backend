@@ -23,7 +23,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     const storageRef = ref(storage, `${req.file.originalname}`);
     const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
     const downloadUrl = await getDownloadURL(snapshot.ref);
-    console.log(req.user);
+    // console.log(req.user);
     const ClubData = await Club.create({
       name: req.body.name,
       image: downloadUrl,
@@ -36,8 +36,21 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     res.status(500).send("Internal server error!");
   }
 });
+router.put("/delete/:id", fetchAdmin, async (req, res) => {
+  try {
+    const isDeleted = await Club.findByIdAndDelete(req.params.id);
+    if (isDeleted) {
+      res.status(200).send("Club deleted....!");
+    } else {
+      res.status(404).send("Club not found");
+    }
+  } catch (error) {
+    res.status(404).send("Club not found");
+  }
+});
 router.get("/", async (req, res) => {
   const clubs = await Club.find();
+
   res.json(clubs);
 });
 

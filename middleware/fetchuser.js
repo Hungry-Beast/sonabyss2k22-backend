@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const fetchuser = (req, res, next) => {
 
+  console.log("Hi")
   // get the user from the jwt token and add to the req object
   const bearerToken = req.header("Authorization");
   const token = bearerToken.split(" ")[1];

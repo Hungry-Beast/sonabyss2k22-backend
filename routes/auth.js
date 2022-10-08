@@ -1,13 +1,14 @@
-const express = require('express')
+const express = require("express");
 const router = express.Router();
-const User = require('../models/User')
-const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken');
-const fetchuser = require('../middleware/fetchuser')
+const User = require("../models/User");
+const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const fetchuser = require("../middleware/fetchuser");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
+
 router.post('/createUser', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),
     body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
@@ -15,12 +16,15 @@ router.post('/createUser', [
 ], async (req, res) => {
     let success = false
 
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ success, errors: errors.array() });
     }
     //Checks if the user with same regNo exists already
     try {
+
+
 
         let { regNo, phoneNo } = req.body
         let obj = {}
@@ -53,6 +57,7 @@ router.post('/createUser', [
         success = false
         console.error(err.message);
         res.status(400).json({ success, error: "Internal error occured" })
+
     }
 
 })
@@ -106,9 +111,13 @@ router.post('/getuser', fetchuser, async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Internal error occured")
+
     }
+
 }
+
 )
+
 //ROUTE4: get logged in user details using POST: api/auth/getuser. Login Required
 router.post('/getallothers', fetchuser, async (req, res) => {
     try {

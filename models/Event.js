@@ -14,7 +14,9 @@ const EventSchema = new Schema(
     },
     time: {
       type: String,
-      required: true,
+    },
+    venue: {
+      type: String,
     },
     club: {
       type: mongoose.Schema.Types.ObjectId,
@@ -35,7 +37,25 @@ const EventSchema = new Schema(
     },
     user: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-      default:[]
+      default: [],
+    },
+    duration: {
+      type: String,
+    },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    price: {
+      type: String,
     },
   },
   {
