@@ -41,6 +41,7 @@ router.post("/", fetchUser, async (req, res) => {
       eventId: req.body.eventId,
       eventName: req.body.eventName,
       screenshot: downloadUrl,
+      isPaid: true,
     });
 
     event.user.push(req.user.id);
@@ -65,12 +66,11 @@ router.put("/verify/:id", fetchAdmin, async (req, res) => {
     verifiedDate: req.body.date,
     isVerified: req.body.isVerified,
   });
-  console.log(isVerified)
-  if(isVerified){
-    res.status(202).send("Payment verified...!")
-  }
-  else{
-    res.status(402).send("Payment not verified")
+  console.log(isVerified);
+  if (isVerified) {
+    res.status(202).send("Payment verified...!");
+  } else {
+    res.status(402).send("Payment not verified");
   }
 });
 
