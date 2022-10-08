@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 router.post('/createUser', [
     body('name', 'Enter a valid name').isLength({ min: 3 }),
     body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
-    body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }),
+    body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }).exists(),
 ], async (req, res) => {
     let success = false
 
@@ -23,7 +23,9 @@ router.post('/createUser', [
     try {
 
         let { regNo, phoneNo } = req.body
-        let user = await User.findOne({ phoneNo })
+        let obj = {}
+        regNo ? obj = { regNo } : obj = { phoneNo }
+        let user = await User.findOne(obj)
         if (user) {
             return res.status(400).json({ success, error: "Opps! user already exists." })
         }
@@ -56,7 +58,8 @@ router.post('/createUser', [
 })
 //ROUTE2: Authenticate a user using POST: api/auth/login . No login required
 router.post('/login',
-    [body('regNo', 'Enter a valid Registration Number').exists(),
+    [body('Reg_no', 'Enter a valid reg. no name').isLength({ max: 7 }),
+    body('phoneNo', 'Enter a valid Phone Number').isLength({ max: 10 }).exists(),
     body('password', "Password cannot be blank").exists()],
     async (req, res) => {
         let success = false
@@ -64,8 +67,10 @@ router.post('/login',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { regNo, password } = req.body;
-        const user = await User.findOne({ regNo })
+        const { regNo, phoneNo, password } = req.body;
+        let obj = {}
+        regNo ? obj = { regNo } : obj = { phoneNo }
+        const user = await User.findOne(obj)
         try {
             if (!user) {
                 return res.status(400).json({ success, error: "Please enter correct credentials!" });
