@@ -39,6 +39,10 @@ const EventSchema = new Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: [],
     },
+    isMainEvent:{
+      type:Boolean,
+      required:true
+    },
     duration: {
       type: String,
     },
@@ -54,7 +58,10 @@ const EventSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    price: {
+    priceO: {
+      type: String,
+    },
+    priceN: {
       type: String,
     },
   },

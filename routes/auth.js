@@ -62,9 +62,9 @@ router.post(
 //ROUTE2: Authenticate a user using POST: api/auth/login . No login required
 router.post(
   "/login",
-  [body("password", "Password cannot be blank").exists()],
   async (req, res) => {
     let success = false;
+    console.log(req.body.password);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });

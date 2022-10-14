@@ -46,7 +46,8 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       isOpen: req.body.isOpen,
       createdBy: req.user.id,
       isPaid: req.body.isPaid,
-      price: req.body.price ? req.body.price : "",
+      priceO: req.body.priceO ? req.body.priceO : "",
+      priceN: req.body.priceN ? req.body.priceN : "",
     });
     res.json(EventData);
   } catch (error) {
@@ -67,36 +68,45 @@ router.get("/noAuth/:id", async (req, res) => {
 
 router.get("/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
-  const id = req.params.id;
-  const outsider = req.user.type === "o";
-  const events = await Event.find({ club: id });
-  const resEvents = [];
-  events.map((event) => {
-    resEvents.push({
-      id: event._id,
-      name: event.name,
-      date: event.date,
-      time: event.time,
-      club: event.clubId,
-      clubName: event.clubName,
-      image: event.image,
-      desc: event.desc,
-      isRegistered: event.user.includes(req.user.id),
-      clubName: event.clubName,
-      club: event.club,
-      disabled: outsider && !event.isOpen ? true : false,
-      isPaid:event.isPaid,
+  try {
+    const id = req.params.id;
+    const outsider = req.user.type === "o";
+    if (!id) {
+      res.status(206).json({ error: "Please give a valid club id" });
+    }
+    const events = await Event.find({ club: id });
+    const resEvents = [];
+    events.map((event) => {
+      resEvents.push({
+        id: event._id,
+        name: event.name,
+        date: event.date,
+        time: event.time,
+        club: event.clubId,
+        clubName: event.clubName,
+        image: event.image,
+        desc: event.desc,
+        isRegistered: event.user.includes(req.user.id),
+        clubName: event.clubName,
+        venue: event.venue,
+        club: event.club,
+        disabled: outsider && !event.isOpen ? true : false,
+        isPaid: event.isPaid,
+        price: outsider ? event.priceO : event.priceN,
+      });
     });
-  });
-  res.json(resEvents);
+    res.json(resEvents);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.put("/delete/:id", fetchAdmin, async (req, res) => {
   try {
-    let isDeleted = await Event.findByIdAndDelete(req.params.id);;
+    let isDeleted = await Event.findByIdAndDelete(req.params.id);
     // console.log(req.params.id)
-    
-    
+
     // console.log(isDeleted);
     if (isDeleted) {
       res.status(200).send("Event deleted....!");
@@ -104,7 +114,7 @@ router.put("/delete/:id", fetchAdmin, async (req, res) => {
       res.status(404).send("Event not found");
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(404).send("Event not found...");
   }
 });
