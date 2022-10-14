@@ -6,18 +6,18 @@ const mongoConnect = require("./db");
 const Club = require("./routes/Club");
 const Event = require("./routes/Event");
 const Register = require("./routes/Register");
-const SendMessage=require('./routes/SendMessage')
+const SendMessage = require('./routes/SendMessage')
 const Auth = require('./routes/auth')
 // require('./routes/Test')
 var bodyParser = require('body-parser')
 mongoConnect();
-app.use(express.json({limit: "10mb", extended: true}))
-app.use(express.urlencoded({limit: "10mb", extended: true, parameterLimit: 50000}))
+app.use(express.json({ limit: "10mb", extended: true }))
+app.use(express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 }))
 app.use(cors());
 app.use("/clubs", Club);
 app.use("/events", Event);
 app.use("/registration", Register);
-app.use("/send",SendMessage)
+app.use("/send", SendMessage)
 app.use("/auth", Auth);
 
 const PORT = process.env.PORT || 5000;
