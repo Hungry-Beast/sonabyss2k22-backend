@@ -25,12 +25,13 @@ router.post("/", fetchUser, async (req, res) => {
       const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
       downloadUrl = await getDownloadURL(snapshot.ref);
     }
-
     const userData = await User.findById(req.user.id);
     const event = await Event.findById(req.body.eventId);
-    if (event.user.includes(req.user.id)) {
+    console.log(event);
+    if (event.user && event.user.includes(req.user.id)) {
       return res.status(403).send("Already resgistered to this event");
     }
+    console.log("hi");
     const register = await Register.create({
       name: userData.name,
       regNo: userData.regNo,

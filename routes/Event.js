@@ -78,7 +78,7 @@ router.get("/:id", fetchuser, async (req, res) => {
     const resEvents = [];
     events.map((event) => {
       resEvents.push({
-        id: event._id,
+        _id: event._id,
         name: event.name,
         date: event.date,
         time: event.time,
