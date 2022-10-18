@@ -41,7 +41,7 @@ router.post("/", fetchUser, async (req, res) => {
       eventId: req.body.eventId,
       eventName: req.body.eventName,
       screenshot: downloadUrl,
-      isPaid: true,
+      isPaid: req.body.isPaid,
     });
 
     event.user.push(req.user.id);
