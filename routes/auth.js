@@ -29,16 +29,12 @@ router.post(
       let { regNo, phoneNo } = req.body;
       let user = await User.findOne({ phoneNo });
       if (user) {
-        return res
-          .status(400)
-          .json({ success, error:1 });
+        return res.status(400).json({ success, error: 1 });
       }
       if (regNo) {
         user = await User.findOne({ phoneNo });
         if (user) {
-          return res
-            .status(400)
-            .json({ success, error: 2 });
+          return res.status(400).json({ success, error: 2 });
         }
       }
       const salt = await bcrypt.genSalt(10);
@@ -48,7 +44,7 @@ router.post(
         password: secPassword,
         phoneNo: req.body.phoneNo,
         regNo,
-        userType: req.body.userType,
+        userType: req.body.userType==="s"?"s":"a",
       });
       const data = {
         user: {
@@ -58,8 +54,12 @@ router.post(
 
       success = true;
       const authToken = jwt.sign(data, JWT_SECRET);
-      // res.json(user) //sending user as response
-      res.json({ success, authToken });
+      const userData = await User.findById(user.id)
+        .select("-password")
+        .select("-_id")
+        .select("-userType");
+
+      res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
       success = false;
       console.error(err.message);
@@ -103,7 +103,12 @@ router.post("/login", async (req, res) => {
     const authToken = jwt.sign(data, JWT_SECRET);
     success = true;
     // res.json(user) //sending user as response
-    res.json({ success, authToken });
+    const userData = await User.findById(user.id)
+      .select("-password")
+      .select("-_id")
+      .select("-userType");
+
+    res.json({ success, authToken, ...userData.toObject() });
   } catch (err) {
     success = false;
     console.error(err.message);
@@ -113,12 +118,12 @@ router.post("/login", async (req, res) => {
 //ROUTE3: get the details of the loggen in user using POST: api/auth/getuser. Login Required
 router.get("/getuser", fetchuser, async (req, res) => {
   try {
-    console.log(req.user)
+    console.log(req.user);
     userId = req.user.id;
     const user = await User.findById(userId).select("-password");
     res.json(user);
   } catch (err) {
-    console.error(err.message);   
+    console.error(err.message);
     res.status(500).send("Internal error occured");
   }
 });

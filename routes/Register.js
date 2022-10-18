@@ -1,5 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} = require("firebase/storage");
+const storage = getStorage();
 
 const Register = require("../models/Register");
 const Event = require("../models/Event");
@@ -9,11 +17,18 @@ const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const pdfMake = require("pdfmake/build/pdfmake.js");
 const pdfFonts = require("pdfmake/build/vfs_fonts.js");
+const TransactionId = require("../models/TransactionId");
 // const fetchuser = require("../middleware/fetchuser");
 
-router.post("/", fetchUser, async (req, res) => {
+router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
   try {
     let downloadUrl;
+    const event = await Event.findById(req.body.eventId);
+    if (event.user && event.user.includes(req.user.id)) {
+      return res
+        .status(403)
+        .json({ message: "Already resgistered to this event" });
+    }
     if (req.file) {
       let metadata = {
         contentType: req.file.mimetype,
@@ -26,11 +41,9 @@ router.post("/", fetchUser, async (req, res) => {
       downloadUrl = await getDownloadURL(snapshot.ref);
     }
     const userData = await User.findById(req.user.id);
-    const event = await Event.findById(req.body.eventId);
+
     console.log(event);
-    if (event.user && event.user.includes(req.user.id)) {
-      return res.status(403).send("Already resgistered to this event");
-    }
+
     console.log("hi");
     const register = await Register.create({
       name: userData.name,
@@ -42,7 +55,7 @@ router.post("/", fetchUser, async (req, res) => {
       eventId: req.body.eventId,
       eventName: req.body.eventName,
       screenshot: downloadUrl,
-      isPaid: req.body.isPaid,
+      isPaid: event.isPaid,
     });
 
     event.user.push(req.user.id);
@@ -62,16 +75,47 @@ router.get("/:id", fetchAdmin, async (req, res) => {
 });
 
 router.put("/verify/:id", fetchAdmin, async (req, res) => {
-  const isVerified = await Register.findByIdAndUpdate(req.params.id, {
-    verifiedBy: req.user.id,
-    verifiedDate: req.body.date,
-    isVerified: req.body.isVerified,
-  });
-  console.log(isVerified);
-  if (isVerified) {
-    res.status(202).send("Payment verified...!");
-  } else {
-    res.status(402).send("Payment not verified");
+  try {
+    if (req.body.transactionId) {
+      const isAlready = await TransactionId.findOne({
+        transactionId: req.body.transactionId,
+      });
+      const user = await User.findById(req.user.id);
+      console.log(isAlready);
+      if (isAlready) {
+        res.status(400).json({ error: "Transaction Id is not unique" });
+        return;
+      }
+      console.log("Hi");
+      const isVerified = await Register.findByIdAndUpdate(req.params.id, {
+        verifiedBy: req.user.id,
+        verifiedDate: req.body.date,
+        isVerified: req.body.isVerified,
+      });
+      const transactionId = await TransactionId.create({
+        regNo: user.regNo,
+        transactionId: req.body.transactionId,
+        eventId: req.body.eventId,
+        eventName: req.body.eventName,
+        clubName: req.body.clubName,
+      });
+
+      console.log(isVerified);
+      if (isVerified) {
+        res.status(202).json({ message: "Payment verified...!" });
+      } else {
+        res.status(402).send({ message: "Payment not verified" });
+      }
+    } else {
+      const isVerified = await Register.findByIdAndUpdate(req.params.id, {
+        verifiedBy: req.user.id,
+        verifiedDate: req.body.date,
+        isVerified: req.body.isVerified,
+      });
+      res.status(226).send({ message: "Payment rejected...!" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Someting Went wrong" });
   }
 });
 

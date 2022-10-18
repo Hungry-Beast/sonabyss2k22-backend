@@ -52,8 +52,8 @@ const RegisterSchema = new Schema(
       type: String,
     },
     isVerified: {
-      type: Boolean,
-      default: false,
+      type: Number,
+      default: 0,
     },
   },
   {
