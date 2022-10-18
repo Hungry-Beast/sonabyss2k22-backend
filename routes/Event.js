@@ -106,7 +106,7 @@ router.get("/:id", fetchuser, async (req, res) => {
   }
 });
 
-router.put("/delete/:id", fetchAdmin, async (req, res) => {
+router.delete("/delete/:id", fetchAdmin, async (req, res) => {
   try {
     let isDeleted = await Event.findByIdAndDelete(req.params.id);
     // console.log(req.params.id)
