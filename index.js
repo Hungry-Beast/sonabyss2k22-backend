@@ -8,6 +8,7 @@ const Event = require("./routes/Event");
 const Register = require("./routes/Register");
 const SendMessage = require("./routes/SendMessage");
 const Auth = require("./routes/auth");
+const Organisers = require("./routes/Organisers");
 var path = require("path");
 var public = path.join(__dirname, "");
 // require('./routes/Test')
@@ -25,6 +26,7 @@ app.use("/events", Event);
 app.use("/registration", Register);
 app.use("/send", SendMessage);
 app.use("/auth", Auth);
+app.use("/orgainsers", Organisers);
 
 const PORT = process.env.PORT || 5000;
 

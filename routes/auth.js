@@ -32,8 +32,8 @@ router.post(
         return res.status(400).json({ success, error: 1 });
       }
       if (regNo) {
-        user = await User.findOne({ phoneNo });
-        if (user) {
+        let regUser = await User.findOne({ regNo });
+        if (regUser) {
           return res.status(400).json({ success, error: 2 });
         }
       }
@@ -44,7 +44,7 @@ router.post(
         password: secPassword,
         phoneNo: req.body.phoneNo,
         regNo,
-        userType: req.body.userType==="s"?"s":"a",
+        userType: req.body.userType==="s"?"s":"o",
       });
       const data = {
         user: {
@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
   const obj = regNo ? { regNo: regNo } : { phoneNo: phoneNo };
   // console.log(obj);
   const user = await User.findOne(obj);
-  // console.log(user);
+  console.log(user);
   try {
     // console.log(JWT_SECRET);
     if (!user) {
@@ -100,6 +100,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
       },
     };
+    console.log(data)
     const authToken = jwt.sign(data, JWT_SECRET);
     success = true;
     // res.json(user) //sending user as response

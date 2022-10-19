@@ -9,11 +9,20 @@ const {
 } = require("firebase/storage");
 const storage = getStorage();
 
-const Club = require("../models/Club");
-const fetchUser = require("../middleware/fetchuser");
+const Event = require("../models/Event");
+const Register = require("../models/Register");
+const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+const { async } = require("@firebase/util");
+const User = require("../models/User");
+const Organisers = require("../models/Organisers");
+
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
   try {
+    if (!req.file) {
+      res.status(206).send("Please insert a image");
+      return;
+    }
     let metadata = {
       contentType: req.file.mimetype,
       name: req.file.originalname,
@@ -23,39 +32,28 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     const storageRef = ref(storage, `${req.file.originalname}`);
     const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
     const downloadUrl = await getDownloadURL(snapshot.ref);
-    // console.log(req.user);
-    const ClubData = await Club.create({
+    // console.log("hi");
+    const organiser = await Organisers.create({
       name: req.body.name,
+      regNo: req.body.regNo,
       image: downloadUrl,
-      desc: req.body.desc,
-      createdBy: req.user.id,
+      group: req.body.group,    
+      position: req.body.position,
     });
-    res.json(ClubData);
+    res.json(organiser);
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal server error!");
   }
 });
-router.put("/delete/:id", fetchAdmin, async (req, res) => {
-  try {
-    const isDeleted = await Club.findByIdAndDelete(req.params.id);
-    if (isDeleted) {
-      res.status(200).send("Club deleted....!");
-    } else {
-      res.status(404).send("Club not found");
-    }
-  } catch (error) {
-    res.status(404).send("Club not found");
-  }
-});
 router.get("/", async (req, res) => {
-  try {
-    const clubs = await Club.find();
+  const organiser1 = await Organisers.find({ group: 1 });
+  const organiser2 = await Organisers.find({ group: 1 });
 
-    res.json(clubs);
-  } catch (error) {
-    res.status(500).json({ error: error });
-  } 
+  res.json([
+    { group: 1, organisers1 },
+    { group: 2, organiser2 },
+  ]);
 });
 
 module.exports = router;
