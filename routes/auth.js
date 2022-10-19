@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchuser = require("../middleware/fetchuser");
+const fetchAdmin = require("../middleware/fetchAdmin");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
@@ -12,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 router.post('/createUser', [
   body('name', 'Enter a valid name').isLength({ min: 3 }),
   body('password', 'Password must be atleast 5 characters').isLength({ min: 5 }),
-  body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }).exists(),
+  body('phoneNo', 'Enter a valid phone number').isLength({ max: 10 }),
 ], async (req, res) => {
   let success = false
 
@@ -40,7 +41,7 @@ router.post('/createUser', [
       password: secPassword,
       phoneNo: req.body.phoneNo,
       regNo,
-      userType: req.body.userType === 'o' ? 'o' : 'a'
+      userType: req.body.userType !== 's' ? 'o' : 's'
     })
     const data = {
       user: {
@@ -109,7 +110,7 @@ router.post('/login',
 
   })
 //ROUTE3: get the details of the loggen in user using POST: api/auth/getuser. Login Required
-router.post('/getuser', fetchuser, async (req, res) => {
+router.post('/getuser', fetchAdmin, async (req, res) => {
   try {
     userId = req.user.id;
     const user = await User.findById(userId).select('-password')
@@ -126,7 +127,7 @@ router.post('/getuser', fetchuser, async (req, res) => {
 )
 
 //ROUTE4: get logged in user details using POST: api/auth/getuser. Login Required
-router.post('/getallothers', fetchuser, async (req, res) => {
+router.post('/getallothers', fetchAdmin, async (req, res) => {
   try {
     userId = req.user.id;
     const user = await User.find({ userType: 'o' }).select("-password")
