@@ -52,9 +52,13 @@ router.delete("/delete/:id", fetchAdmin, async (req, res) => {
   }
 });
 router.get("/", async (req, res) => {
-  const clubs = await Club.find();
+  try {
+    const clubs = await Club.find();
 
-  res.json(clubs);
+    res.json(clubs);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 
 module.exports = router;

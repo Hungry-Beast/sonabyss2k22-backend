@@ -41,7 +41,7 @@ const EventSchema = new Schema(
     },
     isMainEvent:{
       type:Boolean,
-      required:true
+      // required:true
     },
     duration: {
       type: String,

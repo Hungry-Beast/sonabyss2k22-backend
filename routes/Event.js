@@ -10,9 +10,11 @@ const {
 const storage = getStorage();
 
 const Event = require("../models/Event");
+const Register = require("../models/Register");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const { async } = require("@firebase/util");
+const User = require("../models/User");
 // const { events } = require("../models/Event");
 
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
@@ -72,7 +74,9 @@ router.get("/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
   try {
     const id = req.params.id;
-    const outsider = req.user.type === "o";
+    const user = await User.findById(req.user.id);
+    const outsider = user.userType === "o";
+    console.log(outsider);
     if (!id) {
       res.status(206).json({ error: "Please give a valid club id" });
     }
@@ -80,7 +84,7 @@ router.get("/:id", fetchuser, async (req, res) => {
     const resEvents = [];
     events.map((event) => {
       resEvents.push({
-        id: event._id,
+        _id: event._id,
         name: event.name,
         date: event.date,
         time: event.time,
@@ -170,4 +174,117 @@ router.put('/edit/:id', [fetchAdmin, multer().single("file")], async (req, res) 
     res.status(500).send(error.message);
   }
 })
+router.get("/event/:id", fetchuser, async (req, res) => {
+  // console.log(req.params);
+  try {
+    const id = req.params.id;
+    const user = await User.findById(req.user.id);
+    const outsider = user.userType === "o";
+    if (!id) {
+      res.status(206).json({ error: "Please give a valid event id" });
+    }
+    const event = await Event.findById(id);
+    if (!event) {
+      res.status(206).json({ error: "Please give a valid event id" });
+    }
+
+    const registeration = await Register.findOne({ eventId: id, regNo: user.regNo });
+    // if (!registeration) {
+    //   res.status(206).json({ error: "Please give a valid registration id" });
+    // }
+    console.log(registeration)
+    // const resEvents = [];
+    // events.map((event) => {
+    const result = {
+      _id: event._id,
+      name: event.name,
+      date: event.date,
+      time: event.time,
+      club: event.clubId,
+      clubName: event.clubName,
+      image: event.image,
+      desc: event.desc,
+      isRegistered: event.user.includes(req.user.id),
+      clubName: event.clubName,
+      venue: event.venue,
+      club: event.club,
+      disabled: outsider && !event.isOpen ? true : false,
+      isPaid: event.isPaid,
+      price: outsider ? event.priceO : event.priceN,
+      isVerified: registeration?.isVerified
+    };
+
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/event/noAuth/:id", fetchuser, async (req, res) => {
+  // console.log(req.params);
+  try {
+    const id = req.params.id;
+    // const user = await User.findById(req.user.id);
+    // const outsider = user.userType === "o";
+    if (!id) {
+      res.status(206).json({ error: "Please give a valid event id" });
+    }
+    const event = await Event.findById(id);
+    if (!event) {
+      res.status(206).json({ error: "Please give a valid event id" });
+    }
+
+    // const registeration = await Register.findOne({ eventId: id,regNo:user.regNo });
+    // if (!registeration) {
+    //   res.status(206).json({ error: "Please give a valid registration id" });
+    // }
+    // console.log(registeration)
+    // const resEvents = [];
+    // events.map((event) => {
+    const result = {
+      _id: event._id,
+      name: event.name,
+      date: event.date,
+      time: event.time,
+      club: event.clubId,
+      clubName: event.clubName,
+      image: event.image,
+      desc: event.desc,
+      clubName: event.clubName,
+      venue: event.venue,
+      club: event.club,
+      isPaid: event.isPaid,
+      price: event.priceN,
+    };
+
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// router.get('/getalldetails/:id', async (req, res) => {
+//   try {
+//     const id = req.params.id
+//     console.log(id)
+//     if (!id) {
+//       {
+//         res.status(206).json({ error: "Please give a valid event id" });
+//       }
+//       const event = await Event.find({ club: id })
+//       console.log(event)
+//       if (!event) {
+//         res.status(206).json({ error: "Please give a valid event id" });
+//       }
+//       res.json(event);
+//       console.log('called')
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// })
+
+
 module.exports = router;
