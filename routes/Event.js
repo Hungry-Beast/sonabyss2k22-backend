@@ -270,7 +270,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router.get("/event/noAuth/:id", fetchuser, async (req, res) => {
+router.get("/event/noAuth/:id", async (req, res) => {
   // console.log(req.params);
   try {
     const id = req.params.id;
