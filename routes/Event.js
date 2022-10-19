@@ -237,6 +237,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       eventId: id,
       regNo: user.regNo,
     });
+    console.log(event.isMainEvent)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
     // }
@@ -244,7 +245,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     // const resEvents = [];
     // events.map((event) => {
     const result = {
-      _id: event._id,
+      id: event._id,
       name: event.name,
       date: event.date,
       time: event.time,
@@ -260,6 +261,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       isPaid: event.isPaid,
       price: outsider ? event.priceO : event.priceN,
       isVerified: registeration?.isVerified,
+      isMainEvent: event.isMainEvent,
     };
 
     res.json(result);
@@ -290,7 +292,7 @@ router.get("/event/noAuth/:id", fetchuser, async (req, res) => {
     // const resEvents = [];
     // events.map((event) => {
     const result = {
-      _id: event._id,
+      id: event._id,
       name: event.name,
       date: event.date,
       time: event.time,
@@ -303,6 +305,7 @@ router.get("/event/noAuth/:id", fetchuser, async (req, res) => {
       club: event.club,
       isPaid: event.isPaid,
       price: event.priceN,
+      isMainEvent: event.isMainEvent,
     };
 
     res.json(result);
