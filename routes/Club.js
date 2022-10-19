@@ -36,11 +36,14 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     res.status(500).send("Internal server error!");
   }
 });
-router.put("/delete/:id", fetchAdmin, async (req, res) => {
+router.delete("/delete/:id", fetchAdmin, async (req, res) => {
   try {
     const isDeleted = await Club.findByIdAndDelete(req.params.id);
     if (isDeleted) {
-      res.status(200).send("Club deleted....!");
+      res.status(200).json({
+        success: true,
+        club: isDeleted
+      });
     } else {
       res.status(404).send("Club not found");
     }
