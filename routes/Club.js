@@ -38,6 +38,9 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
 });
 router.delete("/delete/:id", fetchAdmin, async (req, res) => {
   try {
+    const club=await Club.findById(req.params.id)
+    // console.log(club)
+    // return res.status(200)
     const isDeleted = await Club.findByIdAndDelete(req.params.id);
     if (isDeleted) {
       res.status(200).json({

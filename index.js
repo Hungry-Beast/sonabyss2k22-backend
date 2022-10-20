@@ -28,7 +28,7 @@ app.use("/send", SendMessage);
 app.use("/auth", Auth);
 app.use("/organisers", Organisers);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 // app.use("/", (req, res) => {
 //   res.send("I am listening");

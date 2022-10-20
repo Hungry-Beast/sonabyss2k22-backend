@@ -248,7 +248,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     });
     console.log(event.isMainEvent);
     const club = await Club.findById(event.club)
-    console.log(club)
+    // console.log(club)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
     // }
