@@ -6,15 +6,24 @@ const ClubSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique:true,
+      unique: true,
     },
     image: {
       type: String,
-      required:true,
+      required: true,
     },
     desc: {
       type: String,
-      required:true,
+      required: true,
+    },
+    upi: {
+      type: String,
+    },
+    qrCode: {
+      type: String,
+    },
+    phoneNo: {
+      type: String,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

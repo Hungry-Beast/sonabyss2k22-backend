@@ -5,15 +5,15 @@ const User = require("../models/User");
 const JWT_SECRET = process.env.JWT_SECRET;
 const fetchuser = async (req, res, next) => {
   console.log("hi")
-  // get the user from the jwt token and add to the req object
-  const bearerToken = req.header("Authorization");
-  const token = bearerToken.split(" ")[1];
-  console.log(token)
-  if (!token) {
-    //in case of invalid token
-    res.status(401).send({ error: "Please authenticate using a valid token!" });
-  }
   try {
+    // get the user from the jwt token and add to the req object
+    const bearerToken = req.header("Authorization");
+    const token = bearerToken.split(" ")[1];
+    console.log(token)
+    if (!token) {
+      //in case of invalid token
+      res.status(401).send({ error: "Please authenticate using a valid token!" });
+    }
     const data = jwt.verify(token, JWT_SECRET);
     console.log(data); //verify and get the user
     const user = await User.findById(data.user.id);

@@ -15,6 +15,7 @@ const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const { async } = require("@firebase/util");
 const User = require("../models/User");
+const Club = require("../models/Club");
 // const { events } = require("../models/Event");
 
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
@@ -97,6 +98,8 @@ router.get("/:id", fetchuser, async (req, res) => {
       res.status(206).json({ error: "Please give a valid club id" });
     }
     const events = await Event.find({ club: id });
+    let club = await Club.findById(id);
+    console.log(club);
     const resPreEvents = [];
     const resMainEvents = [];
     events.map((event) => {
@@ -117,6 +120,9 @@ router.get("/:id", fetchuser, async (req, res) => {
             disabled: outsider && !event.isOpen ? true : false,
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
           })
         : resPreEvents.push({
             id: event._id,
@@ -134,6 +140,9 @@ router.get("/:id", fetchuser, async (req, res) => {
             disabled: outsider && !event.isOpen ? true : false,
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
           });
     });
     res.json([resPreEvents, resMainEvents]);
@@ -237,7 +246,9 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       eventId: id,
       regNo: user.regNo,
     });
-    console.log(event.isMainEvent)
+    console.log(event.isMainEvent);
+    const club = await Club.findById(event.club)
+    console.log(club)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
     // }
@@ -262,6 +273,9 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       price: outsider ? event.priceO : event.priceN,
       isVerified: registeration?.isVerified,
       isMainEvent: event.isMainEvent,
+      qrCode:club.qrCode,
+      upi:club.upi,
+      phoneNo:club.phoneNo
     };
 
     res.json(result);

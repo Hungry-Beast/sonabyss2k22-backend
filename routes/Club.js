@@ -42,7 +42,7 @@ router.delete("/delete/:id", fetchAdmin, async (req, res) => {
     if (isDeleted) {
       res.status(200).json({
         success: true,
-        club: isDeleted
+        club: isDeleted,
       });
     } else {
       res.status(404).send("Club not found");
@@ -58,7 +58,30 @@ router.get("/", async (req, res) => {
     res.json(clubs);
   } catch (error) {
     res.status(500).json({ error: error });
-  } 
+  }
 });
+
+router.put(
+  "/edit/:id",
+  [fetchAdmin, multer().single("file")],
+  async (req, res) => {
+    let metadata = {
+      contentType: req.file.mimetype,
+      name: req.file.originalname,
+    };
+    // storage.put(req.file.buffer, metadata);
+    // }
+    const storageRef = ref(storage, `${req.file.originalname}`);
+    const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
+    const downloadUrl = await getDownloadURL(snapshot.ref);
+    // console.log(req.user);
+    const ClubData = await Club.findByIdAndUpdate(req.params.id, {
+      qrCode: downloadUrl,
+      phoneNo: req.body.phoneNo,
+      upi: req.body.upi,
+    });
+    res.json(ClubData);
+  }
+);
 
 module.exports = router;
