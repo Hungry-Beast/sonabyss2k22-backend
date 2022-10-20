@@ -22,7 +22,19 @@ const OrganiserSchema = new Schema(
     position: {
       type: String,
       required: true,
-    }
+    },
+    fb: {
+      type: String,
+    },
+    insta: {
+      type: String,
+    },
+    linkedin: {
+      type: String,
+    },
+    github: {
+      type: String,
+    },
   },
   {
     timestamps: true,
