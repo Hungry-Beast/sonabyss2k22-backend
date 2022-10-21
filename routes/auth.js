@@ -35,6 +35,7 @@ router.post(
 
       if (regNo) {
         let user2 = await User.findOne({ regNo });
+        
         if (user2) {
           return res.status(400).json({ success, error: 2 });
         }
