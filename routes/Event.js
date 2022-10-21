@@ -320,6 +320,7 @@ router.get("/event/noAuth/:id", async (req, res) => {
       isPaid: event.isPaid,
       price: event.priceN,
       isMainEvent: event.isMainEvent,
+      
     };
 
     res.json(result);
