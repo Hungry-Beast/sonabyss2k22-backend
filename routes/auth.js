@@ -35,7 +35,7 @@ router.post(
 
       if (regNo) {
         let user2 = await User.findOne({ regNo });
-        
+
         if (user2) {
           return res.status(400).json({ success, error: 2 });
         }
@@ -47,7 +47,7 @@ router.post(
         password: secPassword,
         phoneNo: req.body.phoneNo,
         regNo,
-        userType: req.body.userType === "s" ? "s" : "a",
+        userType: req.body.userType === "s" ? "s" : "o",
       });
       const data = {
         user: {
