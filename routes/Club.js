@@ -68,22 +68,27 @@ router.put(
   "/edit/:id",
   [fetchAdmin, multer().single("file")],
   async (req, res) => {
-    let metadata = {
-      contentType: req.file.mimetype,
-      name: req.file.originalname,
-    };
-    // storage.put(req.file.buffer, metadata);
-    // }
-    const storageRef = ref(storage, `${req.file.originalname}`);
-    const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
-    // console.log(req.user);
-    const ClubData = await Club.findByIdAndUpdate(req.params.id, {
-      qrCode: downloadUrl,
-      phoneNo: req.body.phoneNo,
-      upi: req.body.upi,
-    });
-    res.json(ClubData);
+    try {
+      
+      let metadata = {
+        contentType: req.file.mimetype,
+        name: req.file.originalname,
+      };
+      // storage.put(req.file.buffer, metadata);
+      // }
+      const storageRef = ref(storage, `${req.file.originalname}`);
+      const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      // console.log(req.user);
+      const ClubData = await Club.findByIdAndUpdate(req.params.id, {
+        qrCode: downloadUrl,
+        phoneNo: req.body.phoneNo,
+        upi: req.body.upi,
+      });
+      res.json(ClubData);
+    } catch (error) {
+      res.status(500)
+    }
   }
 );
 

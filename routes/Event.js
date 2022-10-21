@@ -60,31 +60,49 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
   }
 });
 router.get("/", async (req, res) => {
-  const events = await Event.find();
-  res.json(events);
+  try {
+    
+    const events = await Event.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500)
+  }
 });
 
 router.get("/admin/noAuth/:id", async (req, res) => {
-  const id = req.params.id;
-  const events = await Event.find({ club: id });
-  // const resPreEvents = [];
-  // const resMainEvents = [];
-  // events.map((event) => {
-  //   event.isMainEvent || true
-  //     ? resMainEvents.push(event)
-  //     : resPreEvents.push(event);
-  // });
-  res.status(200).json(events);
+  try {
+    const id = req.params.id;
+    const events = await Event.find({ club: id });
+    // const resPreEvents = [];
+    // const resMainEvents = [];
+    // events.map((event) => {
+    //   event.isMainEvent || true
+    //     ? resMainEvents.push(event)
+    //     : resPreEvents.push(event);
+    // });
+    res.status(200).json(events);
+    
+  } catch (error) {
+    
+    res.status(500);
+    
+  }
 });
 router.get("/noAuth/:id", async (req, res) => {
-  const id = req.params.id;
-  const events = await Event.find({ club: id });
-  const resPreEvents = [];
-  const resMainEvents = [];
-  events.map((event) => {
-    event.isMainEvent ? resMainEvents.push(event) : resPreEvents.push(event);
-  });
-  res.status(200).json([resPreEvents, resMainEvents]);
+  try {
+    
+    const id = req.params.id;
+    const events = await Event.find({ club: id });
+    const resPreEvents = [];
+    const resMainEvents = [];
+    events.map((event) => {
+      event.isMainEvent ? resMainEvents.push(event) : resPreEvents.push(event);
+    });
+    res.status(200).json([resPreEvents, resMainEvents]);
+  } catch (error) {
+    
+    res.status(500).send("Something went wrong");
+  }
 });
 
 router.get("/:id", fetchuser, async (req, res) => {
@@ -321,7 +339,7 @@ router.get("/event/noAuth/:id", async (req, res) => {
       isPaid: event.isPaid,
       price: event.priceN,
       isMainEvent: event.isMainEvent,
-      
+
     };
 
     res.json(result);

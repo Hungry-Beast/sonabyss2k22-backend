@@ -32,9 +32,10 @@ router.post(
       if (user) {
         return res.status(400).json({ success, error: 1 });
       }
+
       if (regNo) {
-        user = await User.findOne({ phoneNo });
-        if (user) {
+        let user2 = await User.findOne({ regNo });
+        if (user2) {
           return res.status(400).json({ success, error: 2 });
         }
       }
