@@ -61,11 +61,10 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
 });
 router.get("/", async (req, res) => {
   try {
-    
     const events = await Event.find();
     res.json(events);
   } catch (error) {
-    res.status(500)
+    res.status(500);
   }
 });
 
@@ -81,16 +80,12 @@ router.get("/admin/noAuth/:id", async (req, res) => {
     //     : resPreEvents.push(event);
     // });
     res.status(200).json(events);
-    
   } catch (error) {
-    
     res.status(500);
-    
   }
 });
 router.get("/noAuth/:id", async (req, res) => {
   try {
-    
     const id = req.params.id;
     const events = await Event.find({ club: id });
     const resPreEvents = [];
@@ -100,7 +95,6 @@ router.get("/noAuth/:id", async (req, res) => {
     });
     res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
-    
     res.status(500).send("Something went wrong");
   }
 });
@@ -123,45 +117,45 @@ router.get("/:id", fetchuser, async (req, res) => {
     events.map((event) => {
       event.isMainEvent
         ? resMainEvents.push({
-          id: event._id,
-          name: event.name,
-          date: event.date,
-          time: event.time,
-          club: event.clubId,
-          clubName: event.clubName,
-          image: event.image,
-          desc: event.desc,
-          isRegistered: event.user.includes(req.user.id),
-          clubName: event.clubName,
-          venue: event.venue,
-          club: event.club,
-          disabled: outsider && !event.isOpen ? true : false,
-          isPaid: event.isPaid,
-          price: outsider ? event.priceO : event.priceN,
-          qrCode: event.isPaid ? club.qrCode : null,
-          upi: event.isPaid ? club.upi : null,
-          phoneNo: event.isPaid ? club.phoneNo : null,
-        })
+            id: event._id,
+            name: event.name,
+            date: event.date,
+            time: event.time,
+            club: event.clubId,
+            clubName: event.clubName,
+            image: event.image,
+            desc: event.desc,
+            isRegistered: event.user.includes(req.user.id),
+            clubName: event.clubName,
+            venue: event.venue,
+            club: event.club,
+            disabled: outsider && !event.isOpen ? true : false,
+            isPaid: event.isPaid,
+            price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
+          })
         : resPreEvents.push({
-          id: event._id,
-          name: event.name,
-          date: event.date,
-          time: event.time,
-          club: event.clubId,
-          clubName: event.clubName,
-          image: event.image,
-          desc: event.desc,
-          isRegistered: event.user.includes(req.user.id),
-          clubName: event.clubName,
-          venue: event.venue,
-          club: event.club,
-          disabled: outsider && !event.isOpen ? true : false,
-          isPaid: event.isPaid,
-          price: outsider ? event.priceO : event.priceN,
-          qrCode: event.isPaid ? club.qrCode : null,
-          upi: event.isPaid ? club.upi : null,
-          phoneNo: event.isPaid ? club.phoneNo : null,
-        });
+            id: event._id,
+            name: event.name,
+            date: event.date,
+            time: event.time,
+            club: event.clubId,
+            clubName: event.clubName,
+            image: event.image,
+            desc: event.desc,
+            isRegistered: event.user.includes(req.user.id),
+            clubName: event.clubName,
+            venue: event.venue,
+            club: event.club,
+            disabled: outsider && !event.isOpen ? true : false,
+            isPaid: event.isPaid,
+            price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
+          });
     });
     res.json([resPreEvents, resMainEvents]);
   } catch (error) {
@@ -265,7 +259,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       regNo: user.regNo,
     });
     console.log(event.isMainEvent);
-    const club = await Club.findById(event.club)
+    const club = await Club.findById(event.club);
     // console.log(club)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
@@ -294,7 +288,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       qrCode: club.qrCode,
       upi: club.upi,
       phoneNo: club.phoneNo,
-      isMainEvent: event.isMainEvent
+      isMainEvent: event.isMainEvent,
     };
 
     res.json(result);
@@ -324,6 +318,7 @@ router.get("/event/noAuth/:id", async (req, res) => {
     // console.log(registeration)
     // const resEvents = [];
     // events.map((event) => {
+    const club = await Club.findById(event.club);
     const result = {
       id: event._id,
       name: event.name,
@@ -338,8 +333,8 @@ router.get("/event/noAuth/:id", async (req, res) => {
       club: event.club,
       isPaid: event.isPaid,
       price: event.priceN,
+      phoneNo: club.phoneNo,
       isMainEvent: event.isMainEvent,
-
     };
 
     res.json(result);
