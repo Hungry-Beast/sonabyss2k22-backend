@@ -41,7 +41,7 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
       downloadUrl = await getDownloadURL(snapshot.ref);
     }
     const userData = await User.findById(req.user.id);
-    if(userData&&userData.userType==="o"){
+    if(userData&&userData.userType==="o"&&!event.isOpen){
       return res.status(404).json({error:"Not allowed to register"})
     } 
     console.log(event);
