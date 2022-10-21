@@ -9,7 +9,6 @@ const RegisterSchema = new Schema(
     },
     regNo: {
       type: String,
-      required: true,
     },
     phoneNo: {
       type: Number,
