@@ -257,9 +257,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     if (!event) {
       res.status(206).json({ error: "Please give a valid event id" });
     }
-    if (event.disabled) {
-      res.status(404).json({ error: "Registration is closed" });
-    }
+    
 
     const registeration = await Register.findOne({
       eventId: id,

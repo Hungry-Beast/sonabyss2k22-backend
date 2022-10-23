@@ -44,6 +44,9 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
     if(userData&&userData.userType==="o"&&!event.isOpen){
       return res.status(404).json({error:"Not allowed to register"})
     } 
+    if (event.disabled) {
+      res.status(404).json({ error: "Registration is closed" });
+    }
     console.log(event);
 
     console.log("hi");
