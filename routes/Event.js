@@ -129,7 +129,9 @@ router.get("/:id", fetchuser, async (req, res) => {
             clubName: event.clubName,
             venue: event.venue,
             club: event.club,
-            disabled: outsider && !event.isOpen ? true : false,
+            disabled:
+              (outsider && !event.isOpen ? true : false) ||
+              (event.disabled ? true : false),
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
             qrCode: event.isPaid ? club.qrCode : null,
@@ -149,7 +151,9 @@ router.get("/:id", fetchuser, async (req, res) => {
             clubName: event.clubName,
             venue: event.venue,
             club: event.club,
-            disabled: outsider && !event.isOpen ? true : false,
+            disabled:
+              (outsider && !event.isOpen ? true : false) ||
+              (event.disabled ? true : false),
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
             qrCode: event.isPaid ? club.qrCode : null,
@@ -341,6 +345,17 @@ router.get("/event/noAuth/:id", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.put("/disable/:id", fetchAdmin, async (req, res) => {
+  try {
+    const event = await Event.findByIdAndUpdate(req.params.id, {
+      disabled: true,
+    });
+    res.send("Disabled");
+  } catch (error) {
+    res.status(404).status({ error: "Something went crazy" });
   }
 });
 
