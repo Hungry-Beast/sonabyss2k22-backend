@@ -257,6 +257,9 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     if (!event) {
       res.status(206).json({ error: "Please give a valid event id" });
     }
+    if (event.disabled) {
+      res.status(404).json({ error: "Registration is closed" });
+    }
 
     const registeration = await Register.findOne({
       eventId: id,
@@ -264,6 +267,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     });
     console.log(event.isMainEvent);
     const club = await Club.findById(event.club);
+
     // console.log(club)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
@@ -284,7 +288,9 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       clubName: event.clubName,
       venue: event.venue,
       club: event.club,
-      disabled: outsider && !event.isOpen ? true : false,
+      disabled:
+        (outsider && !event.isOpen ? true : false) ||
+        (event.disabled ? true : false),
       isPaid: event.isPaid,
       price: outsider ? event.priceO : event.priceN,
       isVerified: registeration?.isVerified,
