@@ -4,7 +4,10 @@ mongoose_URI = "mongodb+srv://user:user@cluster0.rpunmcp.mongodb.net/?retryWrite
 mongoConnect = async () => {
   //   console.log("hi");
   try {
-    await mongoose.connect(mongoose_URI, () => {
+    await mongoose.connect(mongoose_URI,{
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+  }, () => {
       console.log("Connected to mongo Successfully!");
     });
   } catch (error) {
