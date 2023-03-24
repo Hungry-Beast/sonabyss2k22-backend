@@ -9,13 +9,13 @@ const { initializeApp } = require("firebase/app");
 //   measurementId: "G-X970LKE227",
 // };
 const firebaseConfig = {
-  apiKey: "AIzaSyDzVhi7yNpTRqKuekOVlnKooaHkXpiMuUo",
-  authDomain: "sonabyss-source.firebaseapp.com",
-  projectId: "sonabyss-source",
-  storageBucket: "sonabyss-source.appspot.com",
-  messagingSenderId: "282489693070",
-  appId: "1:282489693070:web:fd2b4b22f2d91d11b43adf",
-  measurementId: "G-P813HZWBL9"
+  apiKey: "AIzaSyBV8q7HhfcXdBvNwRZ6AX1Wn80XOUN5Ipc",
+  authDomain: "srishti-8f23d.firebaseapp.com",
+  projectId: "srishti-8f23d",
+  storageBucket: "srishti-8f23d.appspot.com",
+  messagingSenderId: "898270969259",
+  appId: "1:898270969259:web:20c570b4f7e9b5f39d66ee",
+  measurementId: "G-R8T4NHPYTV"
 };
 const app = initializeApp(firebaseConfig);
 

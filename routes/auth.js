@@ -23,6 +23,7 @@ router.post(
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log("HI")
       return res.status(400).json({ success, errors: errors.array() });
     }
     //Checks if the user with same regNo exists already
@@ -64,8 +65,8 @@ router.post(
 
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
+      console.log(err.message);
       success = false;
-      console.error(err.message);
       res.status(400).json({ success, error: "Internal error occured" });
     }
   }
