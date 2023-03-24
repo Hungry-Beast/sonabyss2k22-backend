@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "hippu";
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
 router.post(
   "/createUser",
