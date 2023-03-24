@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "hippu";
 const fetchuser = async (req, res, next) => {
   console.log("hi")
   try {
