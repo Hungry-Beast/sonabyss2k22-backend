@@ -1,7 +1,7 @@
 //creating a middleware "fetchuser" for validation of the user wherever login is required. This acts as a function so that we don't have to repeat the same code again and again
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "hippu";
 const fetchuser = (req, res, next) => {
 
   // console.log("Hi")
