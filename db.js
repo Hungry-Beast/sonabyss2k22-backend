@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv/config");
-mongoose_URI = process.env.DB_KEY;
+mongoose_URI = "mongodb+srv://user:user@cluster0.rpunmcp.mongodb.net/?retryWrites=true&w=majority";
 mongoConnect = async () => {
   //   console.log("hi");
   try {
