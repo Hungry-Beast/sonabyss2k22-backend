@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+
+<!-- 
+<div class="h-100 d-flex align-items-center justify-content-center mt-5">
+	<div class="w-50 border border-info p-5">
+		
+		<form action="login" method="post">
+			<div class="mb-3">
+				<label class="form-label" for="username">Phone</label>
+				<input class="form-control" type="text" name="phoneNo" id="username">
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="password">Password</label>
+				<input class="form-control" type="password" name="password" id="password">
+			</div>
+			<button class="btn btn-primary mt-2">Submit</button>
+		</form>
+	</div>
+</div> -->
+
+<form id="login-form">
+	<label for="username">Username:</label>
+	<input type="text" id="username" name="phoneNo">
+	<br>
+	<label for="password">Password:</label>
+	<input type="password" id="password" name="password">
+	<br>
+	<input type="submit" value="Login">
+  </form>
+  
+  <script>
+	const form = document.getElementById('login-form');
+	form.addEventListener('submit', async (event) => {
+	  event.preventDefault();
+	  const phoneNo = document.getElementById('username').value;
+	  const password = document.getElementById('password').value;
+	  const response = await fetch('/auth/login', {
+		method: 'POST',
+		body: JSON.stringify({ phoneNo, password }),
+		headers: { 'Content-Type': 'application/json' }
+	  });
+	  const data = await response.json();
+	  if (data.success) {
+		localStorage.setItem('user',JSON.stringify(data));
+		window.location.href = '/';
+	  } else {
+		alert('Login failed!');
+	  }
+	 
+	});
+  </script>
+
+</body>
+</html>

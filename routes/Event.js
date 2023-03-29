@@ -93,7 +93,11 @@ router.get("/noAuth/:id", async (req, res) => {
     events.map((event) => {
       event.isMainEvent ? resMainEvents.push(event) : resPreEvents.push(event);
     });
-    res.status(200).json([resPreEvents, resMainEvents]);
+
+
+    res.render('events',{resMainEvents,resPreEvents});
+  
+    // res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
     res.status(500).send("Something went wrong");
   }
