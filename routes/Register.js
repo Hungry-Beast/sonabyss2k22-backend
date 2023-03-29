@@ -50,8 +50,13 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
     console.log(event);
 
     console.log("hi");
+    let names=[];
+    if (req.body.isTeamEvent) {
+       names = req.body.names.split(",");
+    }
     const register = await Register.create({
       name: userData.name,
+      names: names,
       regNo: userData.regNo,
       phoneNo: userData.phoneNo,
       date: req.body.date,
@@ -61,6 +66,8 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
       eventName: req.body.eventName,
       screenshot: downloadUrl,
       isPaid: event.isPaid,
+      isTeamEvent:req.body.isTeamEvent,
+      teamSize:req.body.teamSize?req.body.teamSize:0
     });
 
     event.user.push(req.user.id);
