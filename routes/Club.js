@@ -57,8 +57,7 @@ router.delete("/delete/:id", fetchAdmin, async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const clubs = await Club.find();
-
-    res.json(clubs);
+    res.render('clubs',{clubs});
   } catch (error) {
     res.status(500).json({ error: error });
   }
