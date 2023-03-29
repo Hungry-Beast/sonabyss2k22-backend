@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 require("dotenv/config");
-mongoose_URI = "mongodb+srv://user:user@cluster0.rpunmcp.mongodb.net/?retryWrites=true&w=majority";
+
+mongoose_URI = "mongodb://localhost:27017/srishti";
+// >>>>>>> development
 mongoConnect = async () => {
   //   console.log("hi");
   try {

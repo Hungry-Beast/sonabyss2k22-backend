@@ -5,7 +5,14 @@ const RegisterSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      // required: true,
+    },
+    names: {
+      type: Array,
+    },
+    isTeamEvent: {
+      type: Boolean,
+      default: false,
     },
     regNo: {
       type: String,

@@ -64,6 +64,13 @@ const EventSchema = new Schema(
     priceN: {
       type: String,
     },
+    isTeamEvent: {
+      type: Boolean,
+      default: false,
+    },
+    teamSize: {
+      type: Number,
+    },
     disabled: {
       type: Boolean,
       default: false,

@@ -52,6 +52,8 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       priceO: req.body.priceO ? req.body.priceO : "",
       priceN: req.body.priceN ? req.body.priceN : "",
       isMainEvent: req.body.isMainEvent,
+      isTeamEvent:req.body.isTeamEvent,
+      teamSize:req.body.isTeamEvent?req.body.teamSize:0
     });
     res.json(EventData);
   } catch (error) {
