@@ -1,0 +1,81 @@
+
+	<ol>
+		<%for(let i of resMainEvents){%>
+			<li><%=i.name%></li>
+
+			<form action="">
+				<input type="text" id="eventId" value="<%=i._id%>" name="<%=i._id%>">
+				<%for(let j=0;j< (<%=i.teamSize%>)-1;j++){%>
+					<input type="text" id="<%=j%>" name="<%=j%>" >
+				<%}%>
+				<button type="submit" id="register">register</button>
+			</form>
+		<%}%>
+	</ol>
+	<%for(let j=0;j< (<%=i.teamSize%>)-1;j++){%>
+					<input type="text" id="<%=j%>" name="<%=j%>" >
+				<%}%>
+
+			<input type="text" id="<%=j%>" name="<%=j%>" >
+
+
+	<script>
+		const viewBtn=document.getElementById('view-btn');
+		const forms=document.getElementsByName('form');
+		const user=localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'));
+		
+		for (form of forms ){
+			form.addEventListener('submit',async(event)=>{
+				event.preventDefault()
+				if(user){
+					window.location.href=`/events/${event.target.clubId.value}`
+				}else{
+					window.location.href=`/events/noAuth/${event.target.clubId.value}`
+				}
+				
+			})
+		}
+		
+			
+
+		
+
+		  	  let event_id=document.getElementById('eventId').value;
+		  let team_size=document.getElementById('teamSize');
+
+		  let names="";
+		for(let i=0;i<team_size-1;j++){
+			
+		}
+
+
+	names+=document.getElementById(`${i}${j}`).value
+
+var today = new Date();
+			  var dd = String(today.getDate()).padStart(2, '0');
+			  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			  var yyyy = today.getFullYear();
+	  
+			  today = mm + '/' + dd + '/' + yyyy;
+				const user=JSON.parse(localStorage.getItem('user'))
+				const response = await fetch('/registration', {
+				  method: 'POST',
+				  body: JSON.stringify({ eventId:event_id,date:today }),
+				  headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${user.authToken}`}
+				});
+				const data = await response.json();
+				if (data.success) {
+				  localStorage.setItem('user',data);
+				  alert("Success");
+				} else {
+				  alert('Login failed!');
+				}
+
+
+
+				viewBtn.addEventListener('click',()=>{
+		const user=localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'));
+		if(user){
+			window.location.href = `/events/${}`;
+		}
+	})

@@ -167,7 +167,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             phoneNo: event.isPaid ? club.phoneNo : null,
           });
     });
-    res.json([resPreEvents, resMainEvents]);
+    res.render('authEvents',{resMainEvents,resPreEvents});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -390,5 +390,7 @@ router.put("/disable/:id", fetchAdmin, async (req, res) => {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // })
+
+
 
 module.exports = router;

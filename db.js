@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 
 
-mongoose_URI = "mongodb://localhost:27017/srishti";
+mongoose_URI = "mongodb://localhost:27017/shristi23";
 // >>>>>>> development
 
 mongoConnect = async () => {

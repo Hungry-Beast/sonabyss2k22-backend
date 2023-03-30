@@ -52,6 +52,7 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
 
     console.log("hi");
     let names=[];
+    console.log(req.body.names)
     if (req.body.isTeamEvent) {
        names = req.body.names.split(",");
     }

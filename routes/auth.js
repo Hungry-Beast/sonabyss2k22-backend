@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+const session=require('express-session')
 // const 
 
 const JWT_SECRET = '1234'
@@ -71,6 +72,7 @@ router.post(
         .select("-_id")
         .select("-userType");
 
+      req.session.user=authToken;
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
       console.log(err.message);
@@ -89,7 +91,7 @@ router.get('/login',async(req,res)=>{
 
 router.post("/login", async (req, res) => {
   let success = false;
-  console.log(req.body.password);
+  // console.log(req.body.password);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -128,6 +130,7 @@ router.post("/login", async (req, res) => {
       .select("-password")
       .select("-_id")
       .select("-userType");
+      // req.session.token=authToken;
     // localStorage.setItem('currentUser',{ success, authToken, ...userData.toObject() });
     res.json({ success, authToken, ...userData.toObject() });
     // res.redirect('/');

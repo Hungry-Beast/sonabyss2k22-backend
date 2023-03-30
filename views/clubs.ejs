@@ -7,15 +7,40 @@
 	<title>Document</title>
 </head>
 <body>
+
+
 	<h2>Hello</h2>
 	<ol>
+		
 		<%for(let club of clubs){%>
 			<li><%=club.name%></li>
-			<a href="/events/noAuth/<%=club._id%>">View</a>
+			<form name="form">
+				<input type="text" name="clubId" value="<%=club._id%>">
+				<button type="submit"  id="view-btn">View event</button>
+			
+			</form>
+
 		<%}%>
 	</ol>
 
-	
+	<script>
+		const viewBtn=document.getElementById('view-btn');
+		const forms=document.getElementsByName('form');
+		const user=localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'));
 		
+		for (form of forms ){
+			form.addEventListener('submit',async(event)=>{
+				event.preventDefault()
+				if(user){
+					window.location.href=`/events/${event.target.clubId.value}`
+				}else{
+					window.location.href=`/events/noAuth/${event.target.clubId.value}`
+				}
+				
+			})
+		}
+		
+	</script>
+	
 </body>
 </html>

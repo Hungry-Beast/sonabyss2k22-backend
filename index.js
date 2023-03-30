@@ -10,6 +10,7 @@ const Auth = require("./routes/auth");
 const Organisers = require("./routes/Organisers");
 var path = require("path");
 // var public = path.join(__dirname, "");
+const session = require('express-session')
 require('./routes/Test')
 var bodyParser = require("body-parser");
 mongoConnect();
@@ -26,6 +27,10 @@ app.use(express.json({ limit: "10mb", extended: true }));
 app.use(
   express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 50000 })
 );
+
+
+
+
 app.use(express.json());
 app.use(cors());
 app.use("/clubs", Club);
@@ -33,6 +38,12 @@ app.use("/events", Event);
 app.use("/registration", Register);
 app.use("/auth", Auth);
 app.use("/organisers", Organisers);
+
+app.use(session({
+  secret: 'secret',
+
+}))
+
 
 const PORT = process.env.PORT || 5000;
 
