@@ -39,11 +39,6 @@ app.use("/registration", Register);
 app.use("/auth", Auth);
 app.use("/organisers", Organisers);
 
-app.use(session({
-  secret: 'secret',
-
-}))
-
 
 const PORT = process.env.PORT || 5000;
 

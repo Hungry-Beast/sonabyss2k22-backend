@@ -72,7 +72,7 @@ router.post(
         .select("-_id")
         .select("-userType");
 
-      req.session.user=authToken;
+      // req.session.user=authToken;
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
       console.log(err.message);
@@ -130,8 +130,6 @@ router.post("/login", async (req, res) => {
       .select("-password")
       .select("-_id")
       .select("-userType");
-      // req.session.token=authToken;
-    // localStorage.setItem('currentUser',{ success, authToken, ...userData.toObject() });
     res.json({ success, authToken, ...userData.toObject() });
     // res.redirect('/');
 

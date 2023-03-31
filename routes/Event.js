@@ -52,8 +52,8 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       priceO: req.body.priceO ? req.body.priceO : "",
       priceN: req.body.priceN ? req.body.priceN : "",
       isMainEvent: req.body.isMainEvent,
-      isTeamEvent:req.body.isTeamEvent,
-      teamSize:req.body.isTeamEvent?req.body.teamSize:0
+      isTeamEvent: req.body.isTeamEvent,
+      teamSize: req.body.isTeamEvent ? req.body.teamSize : 0,
     });
     res.json(EventData);
   } catch (error) {
@@ -96,9 +96,8 @@ router.get("/noAuth/:id", async (req, res) => {
       event.isMainEvent ? resMainEvents.push(event) : resPreEvents.push(event);
     });
 
+    res.render("events", { resMainEvents, resPreEvents });
 
-    res.render('events',{resMainEvents,resPreEvents});
-  
     // res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -167,7 +166,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             phoneNo: event.isPaid ? club.phoneNo : null,
           });
     });
-    res.render('authEvents',{resMainEvents,resPreEvents});
+    res.json([resMainEvents, resPreEvents]);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -263,7 +262,6 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     if (!event) {
       res.status(206).json({ error: "Please give a valid event id" });
     }
-    
 
     const registeration = await Register.findOne({
       eventId: id,
@@ -390,7 +388,5 @@ router.put("/disable/:id", fetchAdmin, async (req, res) => {
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // })
-
-
 
 module.exports = router;
