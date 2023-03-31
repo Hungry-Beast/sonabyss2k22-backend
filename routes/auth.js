@@ -38,6 +38,7 @@ router.post(
     try {
       let { regNo, phoneNo } = req.body;
       let user = await User.findOne({ phoneNo });
+   
       if (user) {
         return res.status(400).json({ success, error: 1 });
       }
@@ -72,7 +73,6 @@ router.post(
         .select("-_id")
         .select("-userType");
 
-      // req.session.user=authToken;
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
       console.log(err.message);

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .noDisplay {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><%=event.name%></h1>
+
+    <%if(event.isMainEvent){%>
+    <form id="main-register-form">
+      <input
+        type="text"
+        class="noDisplay"
+        id="eventId"
+        value="<%=event._id%>"
+        name="eventId"
+      />
+
+      <input
+        class="noDisplay"
+        type="text"
+        id="<%=event.teamSize%>>"
+        value="<%=event.teamSize%>"
+        name="<%=event.teamSize%>"
+      />
+
+      <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
+      <input type="text" id="name" />
+      <%}%>
+
+      <button type="submit" id="register">register</button>
+
+      <script>
+        //main event
+        const formMain = document.getElementById(`main-register-form`);
+        formMain.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          let names = "";
+          let teamEvent = false;
+          const nameArray = event.target.name;
+          let team_size = 0;
+          for (let nameEle of nameArray) {
+            names += nameEle.value + ",";
+            team_size++;
+            teamEvent = true;
+          }
+          const newNames = names.slice(0, -1);
+          var today = new Date();
+          var dd = String(today.getDate()).padStart(2, "0");
+          var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+          var yyyy = today.getFullYear();
+
+          today = mm + "/" + dd + "/" + yyyy;
+          const user = JSON.parse(localStorage.getItem("user"));
+          const response = await fetch("/registration", {
+            method: "POST",
+            body: JSON.stringify({
+              eventId: event.target.eventId.value,
+              date: today,
+              isTeamEvent: teamEvent,
+              teamSize: team_size,
+              names: newNames,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.authToken}`,
+            },
+          });
+          const data = await response.json();
+          if (data.success) {
+            alert("Success");
+          } else {
+            alert("Already Registered");
+          }
+        });
+      </script>
+    </form>
+
+    <%}else{%>
+    <form id="register-form">
+      <input
+        type="text"
+        class="noDisplay"
+        id="eventId"
+        value="<%=event._id%>"
+        name="eventId"
+      />
+
+      <input
+        class="noDisplay"
+        type="text"
+        id="<%=event.teamSize%>>"
+        value="<%=event.teamSize%>"
+        name="<%=event.teamSize%>"
+      />
+
+      <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
+      <input type="text" id="name" />
+      <%}%>
+
+      <button type="submit" id="register">register</button>
+    </form>
+
+    <%}%>
+
+    <script>
+      //pre event
+
+      const formPre = document.getElementById(`register-form`);
+      formPre.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        let names = "";
+        let teamEvent = false;
+        const nameArray = event.target.name;
+        let team_size = 0;
+        for (let nameEle of nameArray) {
+          names += nameEle.value + ",";
+          team_size++;
+          teamEvent = true;
+        }
+        const newNames = names.slice(0, -1);
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, "0");
+        var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + "/" + dd + "/" + yyyy;
+        const user = JSON.parse(localStorage.getItem("user"));
+        const response = await fetch("/registration", {
+          method: "POST",
+          body: JSON.stringify({
+            eventId: event.target.eventId.value,
+            date: today,
+            isTeamEvent: teamEvent,
+            teamSize: team_size,
+            names: newNames,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.authToken}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          alert("Success");
+        } else {
+          alert("Already Registered");
+        }
+      });
+    </script>
+  </body>
+</html>

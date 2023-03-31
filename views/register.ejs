@@ -1,73 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="signup-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" />
+      <br />
+      <input type="checkbox" name="isNeristian" id="isNeristian" />
 
+      <label class="noDisplay" for="regNo">regNo:</label>
+      <input type="text" id="regNo" name="regNo" />
+      <br />
+      <label for="phoneNo">phoneNo:</label>
+      <input type="text" id="phoneNo" name="phoneNo" />
+      <br />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" />
+      <br />
+      <input type="submit" value="Login" />
+    </form>
 
-<form id="signup-form">
-	<label for="name">Name:</label>
-	<input type="text" id="name" name="name">
-	<br>
-	<input type="checkbox" name="isNeristian" id="isNeristian">
-	<label for="regNo">regNo:</label>
-	<input type="text" id="regNo" name="regNo">
-	<br>
-	<label for="phoneNo">phoneNo:</label>
-	<input type="text" id="phoneNo" name="phoneNo">
-	<br>
-	<label for="password">Password:</label>
-	<input type="password" id="password" name="password">
-	<br>
-	<input type="submit" value="Login">
-  </form>
-  
-  <script>
-	const form = document.getElementById('signup-form');
-	form.addEventListener('submit', async (event) => {
-	  event.preventDefault();
-	  const name = document.getElementById('name').value;
-	  const regNo = document.getElementById('regNo').value;
-	  const phoneNo = document.getElementById('phoneNo').value;
-	  const password = document.getElementById('password').value;
-	  const isNeristian=document.getElementById('isNeristian').checked;
-	  let obj;
-	  if(isNeristian){
-		obj={
-			name:name,
-			regNo:regNo,
-			phoneNo:phoneNo,
-			password:password,
-			isNeristian:isNeristian
-		}
-	  }else{
-		obj={
-			name:name,
-			phoneNo:phoneNo,
-			password:password,
-			isNeristian:isNeristian
-		}
-	  }
-	  const response = await fetch('/auth/createUser', {
-		method: 'POST',
-		body: JSON.stringify(obj),
-		headers: { 'Content-Type': 'application/json' }
-	  });
-	  const data = await response.json();
-	 if (data.success) {
-		localStorage.setItem('user',JSON.stringify(data));
-		window.location.href = '/';
-	  } else {
-		alert('Signup failed!');
-	  }
-	
-	});
-  </script>
-
-</body>
+    <script>
+      const form = document.getElementById("signup-form");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const regNo = document.getElementById("regNo").value;
+        const phoneNo = document.getElementById("phoneNo").value;
+        const password = document.getElementById("password").value;
+        const isNeristian = document.getElementById("isNeristian").checked;
+        let obj;
+        if (isNeristian) {
+          obj = {
+            name: name,
+            regNo: regNo,
+            phoneNo: phoneNo,
+            password: password,
+            isNeristian: isNeristian,
+          };
+        } else {
+          obj = {
+            name: name,
+            phoneNo: phoneNo,
+            password: password,
+            isNeristian: isNeristian,
+          };
+        }
+        const response = await fetch("/auth/createUser", {
+          method: "POST",
+          body: JSON.stringify(obj),
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        if (data.success) {
+          localStorage.setItem("user", JSON.stringify(data));
+          window.location.href = "/";
+        } else {
+          alert("Signup failed!");
+        }
+      });
+    </script>
+  </body>
 </html>
-

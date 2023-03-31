@@ -5,38 +5,41 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+
+	<style>
+		.noDisplay{
+			display: none;
+		}
+	</style>
 </head>
 <body>
 	<h2>Events</h2>
-	
 
+	<ol>
+		<h2>Main events</h2>
+		<% let mainSize=resMainEvents.length%>
+
+		<input class="noDisplay" type="text" id="mainSize" value="<%=mainSize%>" >
+
+		<%for(let i=0; i<resMainEvents.length;i++){%>
+			<li><%=resMainEvents[i].name%></li>
+ 
+			<a href="/events/display/event/<%=resMainEvents[i].id%>">View event</a>
+		
+		<%}%>
+	</ol>
 
 
 	<ol>
-		
+		<h2>Pre Events events</h2>
 		<% let preSize=resPreEvents.length%>
 
-		<input type="text" id="preSize" value="<%=preSize%>" >
+		<input class="noDisplay" type="text" id="preSize" value="<%=preSize%>" >
 
 		<%for(let i=0; i<resPreEvents.length;i++){%>
 			<li><%=resPreEvents[i].name%></li>
-		
-			<form id="register-form<%=i%>">
-				<input type="text" id="eventId" value="<%=resPreEvents[i]._id%>" name="eventId">
-
 			
-				<input type="text" id="teamSize<%=i%>" value="<%=resPreEvents[i].teamSize%>" name="<%=resPreEvents[i].teamSize%>">
-
-				<% let val=resPreEvents[i].teamSize %>
-					<% for(let j=0;j< val-1; j++) {%>
-						<input type="text" id="name"  value="7">
-				<%}%>	
-		
-				<button type="submit" id="register">register</button>
-			</form>
-		
-		
-			
+			<a href="/events/display/event/<%=resPreEvents[i].id%>">View event</a>
 		<%}%>
 	</ol>
 
@@ -44,9 +47,48 @@
 	<script>
 
 		const preSize=document.getElementById('preSize').value;
+		const mainSize=document.getElementById('mainSize').value;
+
 
 		for(let i=0;i<preSize;i++){
 			const form  = document.getElementById(`register-form${i}`);
+			form.addEventListener('submit', async (event) => {
+		 	 event.preventDefault();
+			 let names=""
+			 let teamEvent=false;
+			  const nameArray=event.target.name
+			  let team_size=0;
+			  for(let nameEle of nameArray){
+				names+=nameEle.value+','
+				team_size++;
+				teamEvent=true;
+			  }
+			  const newNames = names.slice(0, -1);
+			var today = new Date();
+			  var dd = String(today.getDate()).padStart(2, '0');
+			  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			  var yyyy = today.getFullYear();
+	  
+			  today = mm + '/' + dd + '/' + yyyy;
+				const user=JSON.parse(localStorage.getItem('user'))
+				const response = await fetch('/registration', {
+				  method: 'POST',
+				  body: JSON.stringify({ eventId:event.target.eventId.value,date:today,isTeamEvent:teamEvent,teamSize:team_size,
+				names: newNames}),
+				  headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${user.authToken}`}
+				});
+				const data = await response.json();
+				if (data.success) {
+				  alert("Success");
+				} else {
+				  alert('Login failed!');
+				}
+			});
+		}
+		
+
+		for(let i=0;i<mainSize;i++){
+			const form  = document.getElementById(`main-register-form${i}`);
 			form.addEventListener('submit', async (event) => {
 		 	 event.preventDefault();
 			 let names=""
