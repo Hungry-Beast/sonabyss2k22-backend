@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<h2>Events</h2>
+	
+	<ol>
+		
+		<% let mainSize=resMainEvents.length%>
+
+		<input type="text" id="mainSize" value="<%=mainSize%>" >
+
+		<%for(let i=0; i<resMainEvents.length;i++){%>
+			<li><%=resMainEvents[i].name%></li>
+		
+			<a href="/auth/login"><button type="submit" id="register">register
+				
+			</button></a>
+			
+			
+		
+		
+			
+		<%}%>
+	</ol>
+
+
+	<ol>
+		
+		<% let preSize=resPreEvents.length%>
+
+		<input type="text" id="preSize" value="<%=preSize%>" >
+
+		<%for(let i=0; i<resPreEvents.length;i++){%>
+			<li><%=resPreEvents[i].name%></li>
+		
+		
+			<a href="/auth/login"><button type="submit" id="register">register
+				
+			</button></a>
+			
+		
+		
+			
+		<%}%>
+	</ol>
+
+
+	<script>
+
+		
+		
+		
+
+
+	  </script>
+		
+</body>
+</html>
+
+

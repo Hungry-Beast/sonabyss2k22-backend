@@ -13,6 +13,7 @@ const Event = require("../models/Event");
 const Register = require("../models/Register");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+const fetchUserParams=require("../middleware/fetchUserParams")
 const { async } = require("@firebase/util");
 const User = require("../models/User");
 const Club = require("../models/Club");
@@ -97,7 +98,7 @@ router.get("/noAuth/:id", async (req, res) => {
     });
 
 
-    res.render('events',{resMainEvents,resPreEvents});
+    res.render('noAuthEvent',{resMainEvents,resPreEvents});
   
     // res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
@@ -105,7 +106,7 @@ router.get("/noAuth/:id", async (req, res) => {
   }
 });
 
-router.get("/:id", fetchuser, async (req, res) => {
+router.get("/:id", fetchUserParams, async (req, res) => {
   // console.log(req.params);
   try {
     const id = req.params.id;
@@ -167,7 +168,79 @@ router.get("/:id", fetchuser, async (req, res) => {
             phoneNo: event.isPaid ? club.phoneNo : null,
           });
     });
-    res.render('authEvents',{resMainEvents,resPreEvents});
+    res.render('events',{resMainEvents,resPreEvents});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router.get("/:id/:token", fetchUserParams, async (req, res) => {
+  // console.log(req.params);
+  try {
+    const id = req.params.id;
+    const user = await User.findById(req.user.id);
+    const outsider = user.userType === "o";
+    console.log(outsider);
+    if (!id) {
+      res.status(206).json({ error: "Please give a valid club id" });
+    }
+    const events = await Event.find({ club: id });
+    let club = await Club.findById(id);
+    console.log(club);
+    const resPreEvents = [];
+    const resMainEvents = [];
+    events.map((event) => {
+      event.isMainEvent
+        ? resMainEvents.push({
+            id: event._id,
+            name: event.name,
+            date: event.date,
+            time: event.time,
+            club: event.clubId,
+            clubName: event.clubName,
+            image: event.image,
+            desc: event.desc,
+            isRegistered: event.user.includes(req.user.id),
+            clubName: event.clubName,
+            venue: event.venue,
+            club: event.club,
+            disabled:
+              (outsider && !event.isOpen ? true : false) ||
+              (event.disabled ? true : false),
+            isPaid: event.isPaid,
+            price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
+            isTeamEvent:event.isTeamEvent,
+            teamSize:event.teamSize
+          })
+        : resPreEvents.push({
+            id: event._id,
+            name: event.name,
+            date: event.date,
+            time: event.time,
+            club: event.clubId,
+            clubName: event.clubName,
+            image: event.image,
+            desc: event.desc,
+            isRegistered: event.user.includes(req.user.id),
+            clubName: event.clubName,
+            venue: event.venue,
+            club: event.club,
+            disabled:
+              (outsider && !event.isOpen ? true : false) ||
+              (event.disabled ? true : false),
+            isPaid: event.isPaid,
+            price: outsider ? event.priceO : event.priceN,
+            qrCode: event.isPaid ? club.qrCode : null,
+            upi: event.isPaid ? club.upi : null,
+            phoneNo: event.isPaid ? club.phoneNo : null,
+            isTeamEvent:event.isTeamEvent,
+            teamSize:event.teamSize
+          });
+    });
+    res.render('events',{resMainEvents,resPreEvents});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -391,6 +464,10 @@ router.put("/disable/:id", fetchAdmin, async (req, res) => {
 //   }
 // })
 
-
+router.get('/display/event/:id',async(req,res)=>{
+  const {id}=req.params;
+  const event=await Event.findById(id);
+  res.render('displayEvent',{event});
+})
 
 module.exports = router;

@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .noDisplay {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <ol>
+      <%for(let club of clubs){%>
+      <li><%=club.name%></li>
+      <form name="form">
+        <input
+          class="noDisplay"
+          type="text"
+          name="clubId"
+          value="<%=club._id%>"
+        />
+        <button type="submit" id="view-btn">View event</button>
+      </form>
 
+      <%}%>
+    </ol>
 
-	<h2>Hello</h2>
-	<ol>
-		
-		<%for(let club of clubs){%>
-			<li><%=club.name%></li>
-			<form name="form">
-				<input type="text" name="clubId" value="<%=club._id%>">
-				<button type="submit"  id="view-btn">View event</button>
-			
-			</form>
+    <script>
+      const viewBtn = document.getElementById("view-btn");
+      const forms = document.getElementsByName("form");
+      const user =
+        localStorage.getItem("user") &&
+        JSON.parse(localStorage.getItem("user"));
 
-		<%}%>
-	</ol>
-
-	<script>
-		const viewBtn=document.getElementById('view-btn');
-		const forms=document.getElementsByName('form');
-		const user=localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'));
-		
-		for (form of forms ){
-			form.addEventListener('submit',async(event)=>{
-				event.preventDefault()
-				if(user){
-					window.location.href=`/events/${event.target.clubId.value}`
-				}else{
-					window.location.href=`/events/noAuth/${event.target.clubId.value}`
-				}
-				
-			})
-		}
-		
-	</script>
-	
-</body>
+      for (form of forms) {
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (user) {
+            window.location.href = `/events/${event.target.clubId.value}/${user.authToken}`;
+          } else {
+            window.location.href = `/events/noAuth/${event.target.clubId.value}`;
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

@@ -36,7 +36,7 @@
             <img style=" height: 65px;width: 85px;padding-top: 10px;" src="assets/img/shristi.png" alt="Global">
             <p></p>
           </a>
-          <a href="about.html">
+          <a href="/clubs">
           <button class="header--cta cta">Explore</button></a>
           <div class="header--nav-toggle">
             <span></span>
@@ -62,8 +62,8 @@
             <div class="intro">
               <div class="intro--banner" >
                 <h1>Shristi <br>NERIST</h1>
-                <a href="about.html" style="color: aliceblue;">
-                <button class="cta">Explore
+                <a href="/auth/signup" style="color: aliceblue;">
+                <button class="cta">Signup/Login
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
                   <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
                     <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
@@ -72,6 +72,7 @@
                   <span class="btn-background"></span>
                 </button>
               </a>
+              
                <img src="assets/img/introduction-visual_low.png" alt="Welcome" >
               </div>
               <div class="intro--options">
@@ -92,22 +93,37 @@
           </li>
           <li class="l-section section">
             <div class="work">
-              <h2>clubs</h2>
+              <h2>Events</h2>
               <div class="work--lockup">
                 <ul class="slider">
-                  <%for(let club of clubs){%>
-                    <li class="slider--item slider--item-left">
-                      <a href="#0">
-                        <div class="slider--item-image">
-                          <img src="<%=club.image%>" alt="Victory">
-                        </div>
-                        <p class="slider--item-title"><%=club.name%></p>
-                        <p class="slider--item-description"><%=club.desc%></p>
-                        <a href="/event/noAuth/<%=club._id%>">View</a>
-                      </a>
-                    </li>
-                  <%}%>
-            
+                  <li class="slider--item slider--item-left">
+                    <a href="#0">
+                      <div class="slider--item-image">
+                        <img src="assets/img/robowar.jpg" alt="Victory">
+                      </div>
+                      <p class="slider--item-title">ROBO WAR</p>
+                      <p class="slider--item-description">Tech Ignition: Unlock Your Imagination</p>
+                    </a>
+                  </li>
+                  <li class="slider--item slider--item-center">
+                    <a href="/clubs">
+                      <div class="slider--item-image">
+                        <img src="assets/img/exploreee.jfif" alt="Alex Nowak">
+                      </div>
+                      <p class="slider--item-title">EXPLORE</p>
+                      <p class="slider--item-description">Explore.Discover. All our events</p>
+                    </a>
+                  </li>
+                  <li class="slider--item slider--item-right">
+                    <a href="#0">
+                      <div class="slider--item-image">
+                        <img src="assets/img/treasure.jpg" alt="Metiew and Smith">
+                      </div>
+                      <p class="slider--item-title">TREASURE &amp; HUNT</p>
+                      <p class="slider--item-description"> Dig Deep Into Discovery of Wonders</p>
+                    </a>
+                  </li>
+                  
                 </ul>
                 <div class="slider--prev">
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -196,11 +212,11 @@
               <h3>SHRISTI <span>2k23</span></h3>
           
               <p class="footer-links">
-                <a href="https://www.nerist.ac.in/events-festivals" target="_blank" class="link-1">Home</a>
+                <a href="https://www.nerist.ac.in/events-festivals"  class="link-1">Home</a>
               
                 <a href="https://en.wikipedia.org/wiki/North_Eastern_Regional_Institute_of_Science_and_Technology" target="_blank">About</a>
                 
-                <a href="about.html">Contact</a>
+                <a href="developer.html">Developer</a>
               </p>
           
               
@@ -258,20 +274,18 @@
   
 </div>
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
 <script src="assets/js/functions-min.js"></script>
 <div class="preloader">
-<!-- <span class="loader"><span class="loader-inner"></span></span></div> -->
-<!-- 
+<span class="loader"><span class="loader-inner"></span></span></div>
+
 <script>
   $(window).on("load",function(){
     $(".preloader").fadeOut("slow");
   });
 </script>
-<script src="sur.js"></script> -->
+<script src="sur.js"></script>
 
 
 
