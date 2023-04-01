@@ -106,8 +106,27 @@ router.get("/noAuth/:id", async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 });
+router.get("/admin/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const events = await Event.find({ club: id });
+    const resPreEvents = [];
+    const resMainEvents = [];
+    events.map((event) => {
+      event.isMainEvent ? resMainEvents.push(event) : resPreEvents.push(event);
+    });
 
-router.get("/:id", fetchUserParams, async (req, res) => {
+    // res.render("events", { resMainEvents, resPreEvents });
+
+    res.json([resMainEvents,resPreEvents]);
+  
+    // res.status(200).json([resPreEvents, resMainEvents]);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+router.get("/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
   try {
     const id = req.params.id;
