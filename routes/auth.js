@@ -11,9 +11,9 @@ const session=require('express-session')
 
 const JWT_SECRET = '1234'
 
-router.get('/signup',async(req,res)=>{
-  res.render("register");
-})
+// router.get('/signup',async(req,res)=>{
+//   res.render("register");
+// })
 
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
 router.post(

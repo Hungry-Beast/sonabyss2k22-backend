@@ -44,12 +44,15 @@ const PORT = process.env.PORT || 5000;
 
 const Clubs=require('./models/Club');
 
-app.use("/", async(req, res) => {
-  const clubs = await Clubs.find();
+app.get("/", async(req, res) => {
+  // const clubs = await Clubs.find();
   // console.log(clubs)
-  res.render('index',{clubs})
+  res.render('index')
 });
 
+app.get('/test',(req,res)=>{
+  res.render('test')
+})
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
