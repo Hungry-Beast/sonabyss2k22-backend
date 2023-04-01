@@ -1,53 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+  <head>
+    <title>Global</title>
 
-	<style>
-		.noDisplay{
-			display: none;
-		}
-	</style>
-</head>
-<body>
-	<h2>Events</h2>
+    <link rel="stylesheet" href="/events/eventstyle.css" />
 
-	<ol>
-		<h2>Main events</h2>
-		<% let mainSize=resMainEvents.length%>
+    <style>
+      body {
+        background-color: #02101c;
+        margin: 0px;
+        font-family: "segoe ui";
+      }
 
-		<input class="noDisplay" type="text" id="mainSize" value="<%=mainSize%>" >
+      .nav {
+        height: 100px;
+        width: 100%;
+        background-color: #0c021d;
+        position: relative;
+      }
 
-		<%for(let i=0; i<resMainEvents.length;i++){%>
-			<li><%=resMainEvents[i].name%></li>
- 
-			<a href="/events/display/event/<%=resMainEvents[i].id%>">View event</a>
+      .nav > .nav-header {
+        display: inline;
+      }
+
+      .nav > .nav-header > .nav-title {
+        display: inline-block;
+        font-size: 22px;
+        color: #fff;
+        padding: 10px 10px 10px 10px;
+      }
+
+      .nav > .nav-btn {
+        display: none;
+      }
+
+      .nav > .nav-links {
+        display: inline;
+        float: right;
+        font-size: 18px;
+        margin-right: 1rem;
+      }
+
+      .nav > .nav-links > a {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 13px 10px 13px 10px;
+        text-decoration: none;
+        color: #efefef;
+      }
+
+      .nav > .nav-links > a:hover {
+        background-color: rgba(71, 32, 245, 0.3);
+      }
+
+      .nav > #nav-check {
+        display: none;
+      }
+
+	  .noDisplay{
+		display: none;
+	  }
+
+      @media (max-width: 600px) {
+        .nav > .nav-btn {
+          display: inline-block;
+          position: absolute;
+          right: 0px;
+          top: 0px;
+        }
+        .nav > .nav-btn > label {
+          display: inline-block;
+          width: 50px;
+          height: 50px;
+          padding: 13px;
+        }
+        .nav > .nav-btn > label:hover,
+        .nav #nav-check:checked ~ .nav-btn > label {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+        .nav > .nav-btn > label > span {
+          display: block;
+          width: 25px;
+          height: 10px;
+          border-top: 2px solid #eee;
+        }
+        .nav > .nav-links {
+          z-index: 10;
+          position: absolute;
+          display: block;
+          width: 100%;
+          background-color: #02101c;
+          height: 0px;
+          transition: all 0.3s ease-in;
+          overflow-y: hidden;
+          top: 50px;
+          left: 0px;
+        }
+        .nav > .nav-links > a {
+          display: block;
+          width: 100%;
+        }
+        .nav > #nav-check:not(:checked) ~ .nav-links {
+          height: 0px;
+        }
+        .nav > #nav-check:checked ~ .nav-links {
+          height: calc(100vh - 50px);
+          overflow-y: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 10px;
+                padding-left: 10px;
+              "
+              src="/assets/img/logo.png"
+              alt="Global"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../Sign up_in/Sign In.html">Signup</a>
+        <a href="">Clubs</a>
+      </div>
+    </div>
+
 		
-		<%}%>
-	</ol>
 
 
-	<ol>
-		<h2>Pre Events events</h2>
+
+
 		<% let preSize=resPreEvents.length%>
 
 		<input class="noDisplay" type="text" id="preSize" value="<%=preSize%>" >
-
-		<%for(let i=0; i<resPreEvents.length;i++){%>
-			<li><%=resPreEvents[i].name%></li>
-			
-			<a href="/events/display/event/<%=resPreEvents[i].id%>">View event</a>
-		<%}%>
-	</ol>
-
+		<div >
+			<h2 style="color: #eee;text-align: center;margin:30px">Pre Event</h2>
+		  </div>
+		<div class="wrap">
+			<%for(let i=0; i<resPreEvents.length;i++){%>
+				<div class="box">
+					<div class="box-top">
+					  <img
+						class="box-image"
+						src="<%=resPreEvents[i].image%>"
+						
+					  />
+					  <div class="title-flex">
+						<h3 class="box-title"><%=resPreEvents[i].name%></h3>
+						<p class="user-follow-info"><%=resPreEvents[i].name%>, <%=resPreEvents[i].time%></p>
+					  </div>
+					  <p class="description">
+						<p class="user-follow-info">Venue: <%=resPreEvents[i].venue%></p>
+						<%=resPreEvents[i].decs%>
+					  </p>
+					</div>
+				
+					<a class="button" href="/events/display/event/<%=resPreEvents[i].id%>">View event</a>
+				</div>
+			<%}%>
+	
+		</div>
+		
 
 	<script>
 
 		const preSize=document.getElementById('preSize').value;
-		const mainSize=document.getElementById('mainSize').value;
+
 
 
 		for(let i=0;i<preSize;i++){
@@ -86,6 +223,41 @@
 			});
 		}
 		
+	</script>
+		<% let mainSize=resMainEvents.length%>
+
+		<input class="noDisplay" type="text" id="mainSize" value="<%=mainSize%>" >
+
+		<div >
+			<h2 style="color: #eee;text-align: center;margin:30px">Main Event</h2>
+		  </div>
+		<div class="wrap">
+			<%for(let i=0; i<resMainEvents.length;i++){%>
+				<div class="box">
+					<div class="box-top">
+					  <img
+						class="box-image"
+						src="<%=resMainEvents[i].image%>"
+						
+					  />
+					  <div class="title-flex">
+						<h3 class="box-title"><%=resMainEvents[i].name%></h3>
+						<p class="user-follow-info"><%=resMainEvents[i].name%>, <%=resMainEvents[i].time%></p>
+					  </div>
+					  <p class="description">
+						<p class="user-follow-info">Venue: <%=resMainEvents[i].venue%></p>
+						<%=resMainEvents[i].decs%>
+					  </p>
+					</div>
+				
+					<a class="button" href="/events/display/event/<%=resMainEvents[i].id%>">View event</a>
+				</div>
+			<%}%>
+		</div>
+		
+
+		<script>
+		const mainSize=document.getElementById('mainSize').value;
 
 		for(let i=0;i<mainSize;i++){
 			const form  = document.getElementById(`main-register-form${i}`);

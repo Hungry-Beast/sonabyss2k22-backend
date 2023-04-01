@@ -75,6 +75,9 @@ const EventSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    youtubeLink:{
+      type:String
+    }
   },
   {
     timestamps: true,

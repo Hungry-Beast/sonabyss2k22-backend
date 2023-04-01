@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/details/detailstyle.css" />
     <title>Document</title>
     <style>
       .noDisplay {
@@ -12,104 +13,168 @@
     </style>
   </head>
   <body>
-    <h1><%=event.name%></h1>
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 2px;
+                padding-left: 10px;
+              "
+              src="/assets/img/logo.png"
+              alt="Global"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../Sign up_in/Sign In.html">Signup</a>
+        <a href="">Clubs</a>
+      </div>
+    </div>
 
-    <%if(event.isMainEvent){%>
-    <form id="main-register-form">
-      <input
-        type="text"
-        class="noDisplay"
-        id="eventId"
-        value="<%=event._id%>"
-        name="eventId"
-      />
+    <div class="hero">
+      <div class="containerss row">
+        <div class="hero__text">
+          <h1 class="h1s"><%=event.name%></h1>
+        </div>
+      </div>
+      <div class="center">
+        <img class="hero__img" src="<%=event.image%>" alt="" />
+      </div>
+      <div class="containerss row">
+        <div class="hero__text">
+          <p class="ps"><%=event.desc%></p>
 
-      <input
-        class="noDisplay"
-        type="text"
-        id="<%=event.teamSize%>>"
-        value="<%=event.teamSize%>"
-        name="<%=event.teamSize%>"
-      />
+          <h3 style="color: azure; margin-bottom: 1rem">Add team members</h3>
+          <%if(event.isMainEvent){%>
+          <form id="main-register-form">
+            <input
+              type="text"
+              class="noDisplay"
+              id="eventId"
+              value="<%=event._id%>"
+              name="eventId"
+            />
 
-      <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
-      <input type="text" id="name" />
-      <%}%>
+            <input
+              class="noDisplay"
+              type="text"
+              id="<%=event.teamSize%>>"
+              value="<%=event.teamSize%>"
+              name="<%=event.teamSize%>"
+            />
 
-      <button type="submit" id="register">register</button>
+            <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              style="display: block; margin-bottom: 1%"
+              placeholder="Team member name"
+            />
+            <%}%>
+            <a href="" target="_blank" style="display: block; width: 25%"
+              ><button id="register" class="btnss">Register</button></a
+            >
+            <!-- <button type="submit" id="register">register</button> -->
 
-      <script>
-        //main event
-        const formMain = document.getElementById(`main-register-form`);
-        formMain.addEventListener("submit", async (event) => {
-          event.preventDefault();
-          let names = "";
-          let teamEvent = false;
-          const nameArray = event.target.name;
-          let team_size = 0;
-          for (let nameEle of nameArray) {
-            names += nameEle.value + ",";
-            team_size++;
-            teamEvent = true;
-          }
-          const newNames = names.slice(0, -1);
-          var today = new Date();
-          var dd = String(today.getDate()).padStart(2, "0");
-          var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-          var yyyy = today.getFullYear();
+            <script>
+              //main event
+              const formMain = document.getElementById(`main-register-form`);
+              formMain.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                let names = "";
+                let teamEvent = false;
+                const nameArray = event.target.name;
+                let team_size = 0;
+                for (let nameEle of nameArray) {
+                  names += nameEle.value + ",";
+                  team_size++;
+                  teamEvent = true;
+                }
+                const newNames = names.slice(0, -1);
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, "0");
+                var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+                var yyyy = today.getFullYear();
 
-          today = mm + "/" + dd + "/" + yyyy;
-          const user = JSON.parse(localStorage.getItem("user"));
-          const response = await fetch("/registration", {
-            method: "POST",
-            body: JSON.stringify({
-              eventId: event.target.eventId.value,
-              date: today,
-              isTeamEvent: teamEvent,
-              teamSize: team_size,
-              names: newNames,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.authToken}`,
-            },
-          });
-          const data = await response.json();
-          if (data.success) {
-            alert("Success");
-          } else {
-            alert("Already Registered");
-          }
-        });
-      </script>
-    </form>
+                today = mm + "/" + dd + "/" + yyyy;
+                const user = JSON.parse(localStorage.getItem("user"));
+                const response = await fetch("/registration", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    eventId: event.target.eventId.value,
+                    date: today,
+                    isTeamEvent: teamEvent,
+                    teamSize: team_size,
+                    names: newNames,
+                  }),
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.authToken}`,
+                  },
+                });
+                const data = await response.json();
+                if (data.success) {
+                  alert("Success");
+                } else {
+                  alert("Already Registered");
+                }
+              });
+            </script>
+          </form>
 
-    <%}else{%>
-    <form id="register-form">
-      <input
-        type="text"
-        class="noDisplay"
-        id="eventId"
-        value="<%=event._id%>"
-        name="eventId"
-      />
+          <%}else{%>
+          <form id="register-form">
+            <input
+              type="text"
+              class="noDisplay"
+              id="eventId"
+              value="<%=event._id%>"
+              name="eventId"
+            />
 
-      <input
-        class="noDisplay"
-        type="text"
-        id="<%=event.teamSize%>>"
-        value="<%=event.teamSize%>"
-        name="<%=event.teamSize%>"
-      />
+            <input
+              class="noDisplay"
+              type="text"
+              id="<%=event.teamSize%>>"
+              value="<%=event.teamSize%>"
+              name="<%=event.teamSize%>"
+            />
 
-      <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
-      <input type="text" id="name" />
-      <%}%>
+            <% let val=event.teamSize %> <% for(let j=0;j< val-1; j++) {%>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              style="display: block; margin-bottom: 1%"
+              placeholder="Team member name"
+            />
+            <%}%>
 
-      <button type="submit" id="register">register</button>
-    </form>
+            <a href="" target="_blank" style="display: block; width: 25%"
+              ><button id="register" class="btnss">Register</button></a
+            >
+          </form>
 
-    <%}%>
+          <%}%>
+        </div>
+      </div>
+    </div>
 
     <script>
       //pre event
