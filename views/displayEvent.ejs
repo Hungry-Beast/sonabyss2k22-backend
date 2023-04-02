@@ -1,14 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- <link rel="stylesheet" href="/navbar/navbar.css" /> -->
     <link rel="stylesheet" href="/details/detailstyle.css" />
-    <title>Document</title>
+
     <style>
-      .noDisplay {
+      body {
+        background-color: #02101c;
+        margin: 0px;
+        font-family: "segoe ui";
+      }
+      .displayNone {
         display: none;
+      }
+
+      .nav {
+        height: 80px;
+        width: 100%;
+        background-color: #0c021d;
+        position: relative;
+      }
+
+      .nav > .nav-header {
+        display: inline;
+      }
+
+      .nav > .nav-header > .nav-title {
+        display: inline-block;
+        font-size: 22px;
+        color: #fff;
+        padding: 10px 10px 10px 10px;
+      }
+
+      .nav > .nav-btn {
+        display: none;
+      }
+
+      .nav > .nav-links {
+        display: inline;
+        float: right;
+        font-size: 18px;
+        margin-right: 2rem;
+      }
+
+      .nav > .nav-links > a {
+        display: inline-block;
+        padding: 13px 10px 13px 10px;
+        text-decoration: none;
+        color: #efefef;
+        margin-top: 1rem;
+      }
+
+      .nav > .nav-links > a:hover {
+        background-color: rgba(71, 32, 245, 0.3);
+      }
+
+      .nav > #nav-check {
+        display: none;
+      }
+
+      .nav .nav-links .displayNone {
+        display: none;
+      }
+
+      @media (max-width: 600px) {
+        .nav > .nav-btn {
+          display: inline-block;
+          position: absolute;
+          right: 0px;
+          top: 0px;
+        }
+        .nav > .nav-btn > label {
+          display: inline-block;
+          width: 50px;
+          height: 50px;
+          padding: 13px;
+        }
+        .nav > .nav-btn > label:hover,
+        .nav #nav-check:checked ~ .nav-btn > label {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+        .nav > .nav-btn > label > span {
+          display: block;
+          width: 25px;
+          height: 10px;
+          border-top: 2px solid #eee;
+        }
+        .nav > .nav-links {
+          z-index: 10;
+          margin-top: 3rem;
+          position: absolute;
+          display: block;
+          width: 100%;
+          background-color: #02101c;
+          height: 0px;
+          transition: all 0.3s ease-in;
+          overflow-y: hidden;
+          top: 50px;
+          left: 0px;
+        }
+        .nav > .nav-links > a {
+          display: block;
+          width: 100%;
+        }
+        .nav > #nav-check:not(:checked) ~ .nav-links {
+          height: 0px;
+        }
+        .nav > #nav-check:checked ~ .nav-links {
+          height: calc(100vh - 50px);
+          overflow-y: auto;
+        }
       }
     </style>
   </head>
@@ -21,7 +128,7 @@
             <img
               style="
                 height: 65px;
-                width: 85px;
+                width: 130px;
                 padding-top: 2px;
                 padding-left: 10px;
               "
@@ -40,38 +147,43 @@
         </label>
       </div>
       <div class="nav-links">
-        <a href="../index.html">Home</a>
-        <a href="../Sign up_in/Sign In.html">Signup</a>
-        <a href="">Clubs</a>
+        <a href="/">Home</a>
+        <a href="/clubs">Clubs</a>
+        <a id="login-btn" href="/auth/login">Signup</a>
+        <a id="logout-btn" class="displayNone" href="">Logout</a>
       </div>
     </div>
 
     <div class="hero">
       <div class="containerss row">
         <div class="hero__text">
-          <h1 class="h1s"><%=event.name%></h1>
+          <div>
+            <h2 style="color: #eee; text-align: center; margin: 5px">
+              <%=event.name%>
+            </h2>
+          </div>
         </div>
       </div>
-      <div class="center">
+      <div class="containerss">
         <img class="hero__img" src="<%=event.image%>" alt="" />
       </div>
       <div class="containerss row">
         <div class="hero__text">
-          <p class="ps"><%=event.desc%></p>
+          <p class="ps">Description : <%=event.desc%></p>
 
           <h3 style="color: azure; margin-bottom: 1rem">Add team members</h3>
           <%if(event.isMainEvent){%>
           <form id="main-register-form">
             <input
               type="text"
-              class="noDisplay"
+              class="displayNone"
               id="eventId"
               value="<%=event._id%>"
               name="eventId"
             />
 
             <input
-              class="noDisplay"
+              class="displayNone"
               type="text"
               id="<%=event.teamSize%>>"
               value="<%=event.teamSize%>"
@@ -142,14 +254,14 @@
           <form id="register-form">
             <input
               type="text"
-              class="noDisplay"
+              class="displayNone"
               id="eventId"
               value="<%=event._id%>"
               name="eventId"
             />
 
             <input
-              class="noDisplay"
+              class="displayNone"
               type="text"
               id="<%=event.teamSize%>>"
               value="<%=event.teamSize%>"
@@ -219,6 +331,28 @@
         } else {
           alert("Already Registered");
         }
+      });
+    </script>
+    <script>
+      const signed_user =
+        localStorage.getItem("user") &&
+        JSON.parse(localStorage.getItem("user"));
+
+      const logout_btn = document.querySelector("#logout-btn");
+      const login_btn = document.querySelector("#login-btn");
+
+      if (signed_user) {
+        toggleClass();
+      }
+
+      function toggleClass() {
+        login_btn.classList.toggle("displayNone");
+        logout_btn.classList.toggle("displayNone");
+      }
+
+      logout_btn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "/";
       });
     </script>
   </body>
