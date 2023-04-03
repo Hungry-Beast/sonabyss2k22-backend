@@ -164,6 +164,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
+            youtubeLink:event.youtubeLink
           })
         : resPreEvents.push({
             id: event._id,
@@ -186,6 +187,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
+            youtubeLink:event.youtubeLink
           });
     });
     // res.json([resMainEvents, resPreEvents]);
@@ -396,6 +398,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       upi: club.upi,
       phoneNo: club.phoneNo,
       isMainEvent: event.isMainEvent,
+
     };
 
     res.json(result);

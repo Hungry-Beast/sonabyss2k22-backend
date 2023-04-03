@@ -57,8 +57,8 @@ router.post(
         password: secPassword,
         phoneNo: req.body.phoneNo,
         regNo,
-        // userType: req.body.userType === "s" ? "s" : "o",
-        userType:'a'
+        userType: req.body.userType === "s" ? "s" : "o",
+        // userType:'a'
       });
       const data = {
         user: {
