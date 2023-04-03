@@ -13,7 +13,7 @@ const Event = require("../models/Event");
 const Register = require("../models/Register");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
-const fetchUserParams=require("../middleware/fetchUserParams")
+const fetchUserParams = require("../middleware/fetchUserParams");
 const { async } = require("@firebase/util");
 const User = require("../models/User");
 const Club = require("../models/Club");
@@ -51,10 +51,10 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       createdBy: req.user.id,
       isPaid: req.body.isPaid,
       priceO: req.body.priceO ? req.body.priceO : "",
-      priceN: req.body.priceN ? req.body.priceN : "",
       isMainEvent: req.body.isMainEvent,
       isTeamEvent: req.body.isTeamEvent,
       teamSize: req.body.isTeamEvent ? req.body.teamSize : 0,
+      youtubeLink: req.body.link ? req.body.link : "-",
     });
     res.json(EventData);
   } catch (error) {
@@ -99,8 +99,8 @@ router.get("/noAuth/:id", async (req, res) => {
 
     // res.render("events", { resMainEvents, resPreEvents });
 
-    res.render('noAuthEvent',{resMainEvents,resPreEvents});
-  
+    res.render("noAuthEvent", { resMainEvents, resPreEvents });
+
     // res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -118,8 +118,8 @@ router.get("/admin/:id", async (req, res) => {
 
     // res.render("events", { resMainEvents, resPreEvents });
 
-    res.json([resMainEvents,resPreEvents]);
-  
+    res.json([resMainEvents, resPreEvents]);
+
     // res.status(200).json([resPreEvents, resMainEvents]);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -159,8 +159,8 @@ router.get("/:id", fetchuser, async (req, res) => {
             disabled:
               (outsider && !event.isOpen ? true : false) ||
               (event.disabled ? true : false),
-            isPaid: event.isPaid,
-            price: outsider ? event.priceO : event.priceN,
+            isPaid: outsider ? event.isPaid : false,
+            price: outsider ? event.priceO : "",
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
@@ -181,15 +181,15 @@ router.get("/:id", fetchuser, async (req, res) => {
             disabled:
               (outsider && !event.isOpen ? true : false) ||
               (event.disabled ? true : false),
-            isPaid: event.isPaid,
-            price: outsider ? event.priceO : event.priceN,
+            isPaid: outsider ? event.isPaid : "",
+            price: outsider ? event.priceO : "",
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
           });
     });
     // res.json([resMainEvents, resPreEvents]);
-    res.render('events',{resMainEvents,resPreEvents});
+    res.render("events", { resMainEvents, resPreEvents });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -233,8 +233,8 @@ router.get("/:id/:token", fetchUserParams, async (req, res) => {
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
-            isTeamEvent:event.isTeamEvent,
-            teamSize:event.teamSize
+            isTeamEvent: event.isTeamEvent,
+            teamSize: event.teamSize,
           })
         : resPreEvents.push({
             id: event._id,
@@ -257,11 +257,11 @@ router.get("/:id/:token", fetchUserParams, async (req, res) => {
             qrCode: event.isPaid ? club.qrCode : null,
             upi: event.isPaid ? club.upi : null,
             phoneNo: event.isPaid ? club.phoneNo : null,
-            isTeamEvent:event.isTeamEvent,
-            teamSize:event.teamSize
+            isTeamEvent: event.isTeamEvent,
+            teamSize: event.teamSize,
           });
     });
-    res.render('events',{resMainEvents,resPreEvents});
+    res.render("events", { resMainEvents, resPreEvents });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
@@ -484,10 +484,10 @@ router.put("/disable/:id", fetchAdmin, async (req, res) => {
 //   }
 // })
 
-router.get('/display/event/:id',async(req,res)=>{
-  const {id}=req.params;
-  const event=await Event.findById(id);
-  res.render('displayEvent',{event});
-})
+router.get("/display/event/:id", async (req, res) => {
+  const { id } = req.params;
+  const event = await Event.findById(id);
+  res.render("displayEvent", { event });
+});
 
 module.exports = router;

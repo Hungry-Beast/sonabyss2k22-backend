@@ -61,9 +61,6 @@ const EventSchema = new Schema(
     priceO: {
       type: String,
     },
-    priceN: {
-      type: String,
-    },
     isTeamEvent: {
       type: Boolean,
       default: false,
@@ -76,7 +73,8 @@ const EventSchema = new Schema(
       default: false,
     },
     youtubeLink:{
-      type:String
+      type:String,
+      default:"-"
     }
   },
   {
