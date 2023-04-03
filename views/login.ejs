@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Global</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="/navbar/navbar.css" />
+    <link rel="stylesheet" href="/events/eventstyle.css" />
+    <link rel="stylesheet" href="/login/css/style.css" />
+
+    <style>
+      body {
+        background-color: #02101c;
+        margin: 0px;
+        font-family: "segoe ui";
+      }
+      .displayNone {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 2px;
+                padding-left: 10px;
+              "
+              src="/assets/img/logo.png"
+              alt="Global"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/clubs">Clubs</a>
+        <a id="login-btn" href="/auth/login">Signup</a>
+        <a id="logout-btn" class="displayNone" href="">Logout</a>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div class="user signinBx">
+          <div class="imgBx">
+            <img src="/assets/img/shristi.png" alt="" />
+          </div>
+          <div class="formBx">
+            <!-- <form id="login-form">
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="phoneNo" />
+			<br />
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" />
+			<br />
+			<input type="submit" value="Login" />
+		  </form> -->
+            <form id="login-form">
+              <h2>Sign In</h2>
+              <input
+                type="number"
+                id="username"
+                name="phoneNo"
+                placeholder="Phone Number"
+              />
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Password"
+              />
+              <input type="submit" name="" value="Login" />
+              <p class="signup">
+                Don't have an account ?
+                <a href="#" onclick="toggleForm();">Sign Up.</a>
+              </p>
+            </form>
+
+            <script>
+              const form = document.getElementById("login-form");
+              form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const phoneNo = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+                const response = await fetch("/auth/login", {
+                  method: "POST",
+                  body: JSON.stringify({ phoneNo, password }),
+                  headers: { "Content-Type": "application/json" },
+                });
+                const data = await response.json();
+                if (data.success) {
+                  localStorage.setItem("user", JSON.stringify(data));
+                  window.location.href = "/";
+                } else {
+                  alert("Login failed!");
+                }
+              });
+            </script>
+          </div>
+        </div>
+
+        <div class="user signupBx">
+          <div class="formBx">
+            <form id="signup-form" action="">
+              <h2>Create an account</h2>
+              <input
+                type="text"
+                id="singup-name"
+                name="name"
+                placeholder="Name"
+              />
+              <div class="checkDiv">
+                <label id="" class="checkbox-container"
+                  >Are you Neristian ?
+                </label>
+                <input
+                  type="checkbox"
+                  id="isNeristian"
+                  class="check-btn"
+                  name=""
+                />
+              </div>
+
+              <input
+                type="number"
+                id="regNo"
+                name="regNo"
+                class="displayNone"
+                placeholder="Registration Number"
+              />
+              <input
+                type="number"
+                id="singup-phoneNo"
+                name="phoneNo"
+                placeholder="Phone Number"
+              />
+              <input
+                type="password"
+                id="singup-password"
+                name="password"
+                placeholder="Create Password"
+              />
+              <input type="submit" name="" value="Sign Up" />
+              <p class="signup">
+                Already have an account ?
+                <a href="#" onclick="toggleForm();">Sign in.</a>
+              </p>
+            </form>
+            <script>
+              const registerForm = document.getElementById("signup-form");
+              registerForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const name = document.getElementById("singup-name").value;
+                const regNo = document.getElementById("regNo").value;
+                const phoneNo = document.getElementById("singup-phoneNo").value;
+                const password =
+                  document.getElementById("singup-password").value;
+                const isNeristian =
+                  document.getElementById("isNeristian").checked;
+                let obj;
+                if (isNeristian) {
+                  obj = {
+                    name: name,
+                    regNo: regNo,
+                    phoneNo: phoneNo,
+                    password: password,
+                    userType: "s",
+                  };
+                } else {
+                  obj = {
+                    name: name,
+                    phoneNo: phoneNo,
+                    password: password,
+                    userType: "o",
+                  };
+                }
+                console.log(obj);
+                const response = await fetch("/auth/createUser", {
+                  method: "POST",
+                  body: JSON.stringify(obj),
+                  headers: { "Content-Type": "application/json" },
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                  localStorage.setItem("user", JSON.stringify(data));
+                  window.location.href = "/";
+                } else {
+                  alert("Signup failed!");
+                }
+              });
+            </script>
+          </div>
+          <div class="imgBx">
+            <img src="/assets/img/shristi.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="/login/js/main.js"></script>
+
+    <script>
+      const check_btn = document.querySelector(".check-btn");
+      const registrationInput = document.querySelector("#regNo");
+      function toggleClass() {
+        registrationInput.classList.toggle("displayNone");
+      }
+
+      check_btn.addEventListener("click", toggleClass);
+    </script>
+
+    <script>
+      const signed_user =
+        localStorage.getItem("user") &&
+        JSON.parse(localStorage.getItem("user"));
+
+      const logout_btn = document.querySelector("#logout-btn");
+      const login_btn = document.querySelector("#login-btn");
+
+      if (signed_user) {
+        toggleClass();
+      }
+
+      function toggleClass() {
+        login_btn.classList.toggle("displayNone");
+        logout_btn.classList.toggle("displayNone");
+      }
+    </script>
+  </body>
+</html>
+
+<!-- <a href="/">Back</a> -->

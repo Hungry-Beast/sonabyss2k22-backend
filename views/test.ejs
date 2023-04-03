@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Global</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="/navbar/navbar.css" />
+    <link rel="stylesheet" href="/events/eventstyle.css" />
+
+    <style>
+      body {
+        background-color: #02101c;
+        margin: 0px;
+        font-family: "segoe ui";
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 2px;
+                padding-left: 10px;
+              "
+              src="/assets/img/logo.png"
+              alt="Global"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a id="login-btn" href="/auth/login">Signup</a>
+        <a id="logout-btn" class="displayNone" href="">Logout</a>
+        <a href="">Clubs</a>
+      </div>
+    </div>
+
+    <div class="">
+      <div>
+        <h2 style="color: #eee; text-align: center; margin: 30px">Pre Event</h2>
+      </div>
+    </div>
+
+    <button onclick="openPopup()" class="btnss">Open Popup</button>
+    <div id="popup" class="popup">
+      <div class="popup-content">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <p style="color: black; font-weight: bold">This is a popup window</p>
+      </div>
+    </div>
+    <style>
+      /* Style the popup */
+      .popup {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+
+      /* Style the popup content */
+      .popup-content {
+        background-color: #e5eb48;
+        border-radius: 30px;
+        margin: 1% auto; /* 10% from the top and centered */
+        padding: 20px;
+        border: 1px solid rgb(152, 60, 60);
+        width: 50%; /* Could be more or less, depending on screen size */
+      }
+
+      /* Style the close button */
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+
+    <script>
+      /* Open the popup */
+      function openPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+
+      /* Close the popup */
+      function closePopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
+
+<script>
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const logout_btn = document.querySelector("#logout-btn");
+  const login_btn = document.querySelector("#login-btn");
+
+  if (user) {
+    toggleClass();
+  }
+
+  function toggleClass() {
+    login_btn.classList.toggle("displayNone");
+    logout_btn.classList.toggle("displayNone");
+  }
+
+  logout_btn.addEventListener("click", () => {
+    localStorage.clear();
+    window.location.href = "/";
+  });
+</script>

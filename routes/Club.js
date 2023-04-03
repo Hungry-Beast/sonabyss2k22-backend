@@ -56,8 +56,17 @@ router.delete("/delete/:id", fetchAdmin, async (req, res) => {
 });
 router.get("/", async (req, res) => {
   try {
+    
     const clubs = await Club.find();
-
+    res.render('clubs',{clubs});
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+router.get("/admin", async (req, res) => {
+  try {
+    
+    const clubs = await Club.find();
     res.json(clubs);
   } catch (error) {
     res.status(500).json({ error: error });

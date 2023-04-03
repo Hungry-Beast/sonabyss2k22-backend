@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Global</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="/navbar/navbar.css" />
+    <link rel="stylesheet" href="/events/eventstyle.css" />
+
+    <style>
+      body {
+        background-color: #02101c;
+        margin: 0px;
+        font-family: "segoe ui";
+      }
+      .displayNone {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 2px;
+                padding-left: 10px;
+              "
+              src="/assets/img/logo.png"
+              alt="Global"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/clubs">Clubs</a>
+        <a id="login-btn" href="/auth/login">Signup</a>
+        <a id="logout-btn" class="displayNone" href="">Logout</a>
+      </div>
+    </div>
+		
+
+
+
+
+		<% let preSize=resPreEvents.length%>
+
+		<input class="displayNone" type="text" id="preSize" value="<%=preSize%>" >
+		<div >
+			<h2 style="color: #eee;text-align: center;margin:30px">Pre Event</h2>
+		  </div>
+		<div class="wrap">
+			<%for(let i=0; i<resPreEvents.length;i++){%>
+				<div class="box">
+					<div class="box-top">
+					  <img
+						class="box-image"
+						src="<%=resPreEvents[i].image%>"
+						
+					  />
+					  <div class="title-flex">
+						<h3 class="box-title"><%=resPreEvents[i].name%></h3>
+						<p class="user-follow-info"><%=resPreEvents[i].date%>, at <%=resPreEvents[i].time%></p>
+					  </div>
+					  <p class="description">
+						<p class="user-follow-info">Venue: <%=resPreEvents[i].venue%></p>
+						<%=resPreEvents[i].decs%>
+					  </p>
+					</div>
+				
+					<a class="button" href="/events/display/event/<%=resPreEvents[i].id%>">View event</a>
+				</div>
+			<%}%>
+	
+		</div>
+		
+
+	<script>
+
+		const preSize=document.getElementById('preSize').value;
+
+
+
+		for(let i=0;i<preSize;i++){
+			const form  = document.getElementById(`register-form${i}`);
+			form.addEventListener('submit', async (event) => {
+		 	 event.preventDefault();
+			 let names=""
+			 let teamEvent=false;
+			  const nameArray=event.target.name
+			  let team_size=0;
+			  for(let nameEle of nameArray){
+				names+=nameEle.value+','
+				team_size++;
+				teamEvent=true;
+			  }
+			  const newNames = names.slice(0, -1);
+			var today = new Date();
+			  var dd = String(today.getDate()).padStart(2, '0');
+			  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			  var yyyy = today.getFullYear();
+	  
+			  today = mm + '/' + dd + '/' + yyyy;
+				const user=JSON.parse(localStorage.getItem('user'))
+				const response = await fetch('/registration', {
+				  method: 'POST',
+				  body: JSON.stringify({ eventId:event.target.eventId.value,date:today,isTeamEvent:teamEvent,teamSize:team_size,
+				names: newNames}),
+				  headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${user.authToken}`}
+				});
+				const data = await response.json();
+				if (data.success) {
+				  alert("Success");
+				} else {
+				  alert('Login failed!');
+				}
+			});
+		}
+		
+	</script>
+		<% let mainSize=resMainEvents.length%>
+
+		<input class="displayNone" type="text" id="mainSize" value="<%=mainSize%>" >
+
+		<div >
+			<h2 style="color: #eee;text-align: center;margin:30px">Main Event</h2>
+		  </div>
+		<div class="wrap">
+			<%for(let i=0; i<resMainEvents.length;i++){%>
+				<div class="box">
+					<div class="box-top">
+					  <img
+						class="box-image"
+						src="<%=resMainEvents[i].image%>"
+						
+					  />
+					  <div class="title-flex">
+						<h3 class="box-title"><%=resMainEvents[i].name%></h3>
+						<p class="user-follow-info"><%=resMainEvents[i].date%>, at <%=resMainEvents[i].time%></p>
+					  </div>
+					  <p class="description">
+						<p class="user-follow-info">Venue: <%=resMainEvents[i].venue%></p>
+						<%=resMainEvents[i].decs%>
+					  </p>
+					</div>
+				
+					<a class="button" href="/events/display/event/<%=resMainEvents[i].id%>">View event</a>
+				</div>
+			<%}%>
+		</div>
+		
+
+		<script>
+		const mainSize=document.getElementById('mainSize').value;
+
+		for(let i=0;i<mainSize;i++){
+			const form  = document.getElementById(`main-register-form${i}`);
+			form.addEventListener('submit', async (event) => {
+		 	 event.preventDefault();
+			 let names=""
+			 let teamEvent=false;
+			  const nameArray=event.target.name
+			  let team_size=0;
+			  for(let nameEle of nameArray){
+				names+=nameEle.value+','
+				team_size++;
+				teamEvent=true;
+			  }
+			  const newNames = names.slice(0, -1);
+			var today = new Date();
+			  var dd = String(today.getDate()).padStart(2, '0');
+			  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+			  var yyyy = today.getFullYear();
+	  
+			  today = mm + '/' + dd + '/' + yyyy;
+				const user=JSON.parse(localStorage.getItem('user'))
+				const response = await fetch('/registration', {
+				  method: 'POST',
+				  body: JSON.stringify({ eventId:event.target.eventId.value,date:today,isTeamEvent:teamEvent,teamSize:team_size,
+				names: newNames}),
+				  headers: { 'Content-Type': 'application/json','Authorization': `Bearer ${user.authToken}`}
+				});
+				const data = await response.json();
+				if (data.success) {
+				  alert("Success");
+				} else {
+				  alert('Login failed!');
+				}
+			});
+		}
+		
+
+
+	  </script>
+
+	  <script>
+		const signed_user =
+        localStorage.getItem("user") &&
+        JSON.parse(localStorage.getItem("user"));
+
+      const logout_btn = document.querySelector("#logout-btn");
+      const login_btn = document.querySelector("#login-btn");
+
+      if (signed_user) {
+        toggleClass();
+      }
+
+      function toggleClass() {
+        login_btn.classList.toggle("displayNone");
+        logout_btn.classList.toggle("displayNone");
+      }
+
+      logout_btn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "/";
+      });
+
+	  </script>
+		
+</body>
+</html>
+
+

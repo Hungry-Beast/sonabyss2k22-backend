@@ -21,6 +21,7 @@ const TransactionId = require("../models/TransactionId");
 // const fetchuser = require("../middleware/fetchuser");
 
 router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
+  
   try {
     let downloadUrl;
     const event = await Event.findById(req.body.eventId);
@@ -50,22 +51,30 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
     console.log(event);
 
     console.log("hi");
+    let names=[];
+    console.log(req.body.names)
+    if (req.body.isTeamEvent) {
+       names = req.body.names.split(",");
+    }
     const register = await Register.create({
       name: userData.name,
+      names: names,
       regNo: userData.regNo,
       phoneNo: userData.phoneNo,
       date: req.body.date,
-      club: req.body.clubId,
-      clubName: req.body.clubName,
+      club: event.club,
+      clubName: event.clubName,
       eventId: req.body.eventId,
-      eventName: req.body.eventName,
+      eventName: event.name,
       screenshot: downloadUrl,
       isPaid: event.isPaid,
+      isTeamEvent:req.body.isTeamEvent,
+      teamSize:req.body.teamSize?req.body.teamSize:0
     });
 
     event.user.push(req.user.id);
     await event.save();
-    res.json(register);
+    res.json({success:true,...register.toObject()});
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal server error!");

@@ -6,8 +6,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+const session=require('express-session')
+// const 
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = '1234'
+
+// router.get('/signup',async(req,res)=>{
+//   res.render("register");
+// })
+
 //ROUTE1: Creating a user using POST request to api/auth/createUser. No login required
 router.post(
   "/createUser",
@@ -19,16 +26,19 @@ router.post(
     body("phoneNo", "Enter a valid phone number").isLength({ max: 10 }),
   ],
   async (req, res) => {
+    console.log("HI");
     let success = false;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log("HI")
       return res.status(400).json({ success, errors: errors.array() });
     }
     //Checks if the user with same regNo exists already
     try {
       let { regNo, phoneNo } = req.body;
       let user = await User.findOne({ phoneNo });
+   
       if (user) {
         return res.status(400).json({ success, error: 1 });
       }
@@ -48,6 +58,7 @@ router.post(
         phoneNo: req.body.phoneNo,
         regNo,
         userType: req.body.userType === "s" ? "s" : "o",
+        // userType:'a'
       });
       const data = {
         user: {
@@ -64,16 +75,23 @@ router.post(
 
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
+      console.log(err.message);
       success = false;
-      console.error(err.message);
       res.status(400).json({ success, error: "Internal error occured" });
     }
   }
 );
+
+router.get('/login',async(req,res)=>{
+  res.render("login");
+})
+
 //ROUTE2: Authenticate a user using POST: api/auth/login . No login required
+
+
 router.post("/login", async (req, res) => {
   let success = false;
-  console.log(req.body.password);
+  // console.log(req.body.password);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -81,9 +99,11 @@ router.post("/login", async (req, res) => {
   const { regNo, password, phoneNo } = req.body;
   const obj = regNo ? { regNo: regNo } : { phoneNo: phoneNo };
   // console.log(obj);
-  const user = await User.findOne(obj);
+
+ 
   // console.log(user);
   try {
+    const user = await User.findOne(obj);
     // console.log(JWT_SECRET);
     if (!user) {
       return res
@@ -93,7 +113,7 @@ router.post("/login", async (req, res) => {
     const passwordCompare = await bcrypt.compare(password, user.password);
 
     if (!passwordCompare) {
-      return res.status(400).json({
+      return res.status(401).json({
         success,
         error: "Please try to login with correct credentials",
       });
@@ -110,8 +130,9 @@ router.post("/login", async (req, res) => {
       .select("-password")
       .select("-_id")
       .select("-userType");
-
     res.json({ success, authToken, ...userData.toObject() });
+    // res.redirect('/');
+
   } catch (err) {
     success = false;
     console.error(err.message);

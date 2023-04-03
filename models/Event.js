@@ -61,13 +61,21 @@ const EventSchema = new Schema(
     priceO: {
       type: String,
     },
-    priceN: {
-      type: String,
+    isTeamEvent: {
+      type: Boolean,
+      default: false,
+    },
+    teamSize: {
+      type: Number,
     },
     disabled: {
       type: Boolean,
       default: false,
     },
+    youtubeLink:{
+      type:String,
+      default:"-"
+    }
   },
   {
     timestamps: true,

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login 07</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" href="Sign up_in/css/style.css" />
+
+    <style>
+      .nav {
+        height: 90px;
+        width: 100%;
+        background-color: #0c021d;
+        position: relative;
+      }
+
+      .nav > .nav-header {
+        display: inline;
+      }
+
+      .nav > .nav-header > .nav-title {
+        display: inline-block;
+        font-size: 22px;
+        color: #fff;
+        padding: 10px 10px 10px 10px;
+      }
+
+      .nav > .nav-btn {
+        display: none;
+      }
+
+      .nav > .nav-links {
+        display: inline;
+        float: right;
+        font-size: 18px;
+        margin-right: 1rem;
+      }
+
+      .nav > .nav-links > a {
+        display: inline-block;
+        padding: 30px 10px 13px 10px;
+        text-decoration: none;
+        color: #efefef;
+      }
+
+      .nav > .nav-links > a:hover {
+        background-color: rgba(71, 32, 245, 0.3);
+      }
+
+      .nav > #nav-check {
+        display: none;
+      }
+
+      @media (max-width: 600px) {
+        .nav > .nav-btn {
+          display: inline-block;
+          position: absolute;
+          right: 0px;
+          top: 0px;
+        }
+        .nav > .nav-btn > label {
+          display: inline-block;
+          width: 50px;
+          height: 50px;
+          padding: 13px;
+        }
+        .nav > .nav-btn > label:hover,
+        .nav #nav-check:checked ~ .nav-btn > label {
+          background-color: rgba(0, 0, 0, 0.3);
+        }
+        .nav > .nav-btn > label > span {
+          display: block;
+          width: 25px;
+          height: 10px;
+          border-top: 2px solid #eee;
+        }
+        .nav > .nav-links {
+          z-index: 10;
+          position: absolute;
+          display: block;
+          width: 100%;
+          background-color: #02101c;
+          height: 0px;
+          transition: all 0.3s ease-in;
+          overflow-y: hidden;
+          top: 50px;
+          left: 0px;
+        }
+        .nav > .nav-links > a {
+          display: block;
+          width: 100%;
+        }
+        .nav > #nav-check:not(:checked) ~ .nav-links {
+          height: 0px;
+        }
+        .nav > #nav-check:checked ~ .nav-links {
+          height: calc(100vh - 50px);
+          overflow-y: auto;
+        }
+      }
+      .displayNone {
+        display: none;
+      }
+    </style>
+  </head>
+  <body style="background-color: #02101c">
+    <div class="nav">
+      <input type="checkbox" id="nav-check" />
+      <div class="nav-header">
+        <div class="nav-title">
+          <a href="#0">
+            <img
+              style="
+                height: 65px;
+                width: 85px;
+                padding-top: 10px;
+                padding-left: 10px;
+              "
+              src="../assets/img/shristi.png"
+            />
+            <p></p>
+          </a>
+        </div>
+      </div>
+      <div class="nav-btn">
+        <label for="nav-check">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
+      <div class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="Sign In.html">Sign In</a>
+        <a href="">Clubs</a>
+        <a href="">Log Out</a>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div class="user signinBx">
+          <div class="imgBx">
+            <img
+              src="https://raw.githubusercontent.com/WoojinFive/CSS_Playground/master/Responsive%20Login%20and%20Registration%20Form/img1.jpg"
+              alt=""
+            />
+          </div>
+          <div class="formBx">
+            <form action="" onsubmit="return false;">
+              <h2>Sign In</h2>
+              <input type="number" name="" placeholder="Phone Number" />
+              <input type="password" name="" placeholder="Password" />
+              <input type="submit" name="" value="Login" />
+              <p class="signup">
+                Don't have an account ?
+                <a href="#" onclick="toggleForm();">Sign Up.</a>
+              </p>
+            </form>
+          </div>
+        </div>
+        <div class="user signupBx">
+          <div class="formBx">
+            <form action="" onsubmit="return false;">
+              <h2>Create an account</h2>
+              <input type="text" name="" placeholder="Username" />
+              <div class="">
+                <label id="" class="checkbox-container"
+                  >Are you Neristian
+                </label>
+                <input type="checkbox" class="check-btn" name="myCheckbox" />
+                <!-- <button class="check-btn">Yes</button> -->
+              </div>
+
+              <input
+                type="number"
+                name=""
+                id="registration-input"
+                class="displayNone"
+                placeholder="Registration Number"
+              />
+              <input type="number" name="" placeholder="Phone Number" />
+              <input type="password" name="" placeholder="Create Password" />
+              <input type="submit" name="" value="Sign Up" />
+              <p class="signup">
+                Already have an account ?
+                <a href="#" onclick="toggleForm();">Sign in.</a>
+              </p>
+            </form>
+          </div>
+          <div class="imgBx">
+            <img
+              src="https://raw.githubusercontent.com/WoojinFive/CSS_Playground/master/Responsive%20Login%20and%20Registration%20Form/img2.jpg"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="js/main.js"></script>
+
+    <script>
+      const check_btn = document.querySelector(".check-btn");
+      const registrationInput = document.querySelector("#registration-input");
+      function toggleClass() {
+        registrationInput.classList.toggle("displayNone");
+      }
+
+      check_btn.addEventListener("click", toggleClass);
+    </script>
+  </body>
+</html>
