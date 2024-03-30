@@ -7,13 +7,13 @@ const {
   uploadBytes,
   getDownloadURL,
 } = require("firebase/storage");
+// const app=require('../firebaseAuth')
 const storage = getStorage();
 
 const Event = require("../models/Event");
 const Register = require("../models/Register");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
-const { async } = require("@firebase/util");
 const User = require("../models/User");
 const Club = require("../models/Club");
 // const { events } = require("../models/Event");
@@ -24,23 +24,24 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       res.status(206).send("Please insert a image");
       return;
     }
-    let metadata = {
-      contentType: req.file.mimetype,
-      name: req.file.originalname,
-    };
+    // let metadata = {
+    //   contentType: req.file.mimetype,
+    //   name: req.file.originalname,
+    // };
+    // console.log(req.file)
     // storage.put(req.file.buffer, metadata);
     // }
-    const storageRef = ref(storage, `${req.file.originalname}`);
-    const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
+    const storageRef =  ref(storage, `${req.file.originalname}`);
+    const snapshot = await uploadBytes(storageRef, req.file.buffer)
+    console.log(snapshot);
     const downloadUrl = await getDownloadURL(snapshot.ref);
-    // console.log("hi");
     const EventData = await Event.create({
       name: req.body.name,
       date: req.body.date,
       time: req.body.time,
       club: req.body.clubId,
       clubName: req.body.clubName,
-      image: downloadUrl,
+      image: "ajja",
       desc: req.body.desc,
       date: req.body.date,
       time: req.body.time,
