@@ -9,6 +9,8 @@ const User = require("../models/User");
 const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const TransactionId = require("../models/TransactionId");
+const supabase = require("../supabase");
+const { getDownloadURL } = require("../utils/helper");
 // const fetchuser = require("../middleware/fetchuser");
 
 router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
@@ -25,11 +27,18 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
         contentType: req.file.mimetype,
         name: req.file.originalname,
       };
-      // storage.put(req.file.buffer, metadata);
-      // }
-      const storageRef = ref(storage, `${req.file.originalname}`);
-      const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
-      downloadUrl = await getDownloadURL(snapshot.ref);
+      const { data, error } = await supabase.storage
+        .from("srishti")
+        .upload(`${req.file.originalname}`, req.file.buffer, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+      if (error) {
+        console.error("Error uploading file:", error.message);
+        throw new Error(error.message);
+      }
+
+      const downloadUrl = getDownloadURL(data.path);
     }
     const userData = await User.findById(req.user.id);
     if (userData && userData.userType === "o" && !event.isOpen) {

@@ -5,6 +5,9 @@ const multer = require("multer");
 const Club = require("../models/Club");
 const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
+
+const supabase = require("../supabase");
+const {getDownloadURL}=require("../utils/helper")
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
   try {
     let metadata = {
@@ -13,9 +16,18 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     };
     // storage.put(req.file.buffer, metadata);
     // }
-    const storageRef = ref(storage, `${req.file.originalname}`);
-    const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
+    const { data, error } = await supabase.storage
+    .from("srishti")
+    .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+  if (error) {
+    console.error("Error uploading file:", error.message);
+    throw new Error(error.message);
+  }
+  
+  const downloadUrl = getDownloadURL(data.path);
     // console.log(req.user);
     const ClubData = await Club.create({
       name: req.body.name,

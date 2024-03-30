@@ -5,18 +5,12 @@ const multer = require("multer");
 // const { S3 } = require("aws-sdk");
 const dotenv = require("dotenv");
 dotenv.config();
-const { createClient } = require("@supabase/supabase-js");
-
-const supabase = createClient(
-  "https://lkefjyhyetaykbxencgg.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrZWZqeWh5ZXRheWtieGVuY2dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgyNzkwMiwiZXhwIjoyMDI3NDAzOTAyfQ.fT_mp1QeCcKFYYl1blbIVMZVbdyeA9VNw0BhiJGJeqU"
-);
-
+const supabase = require("../supabase");
+const {getDownloadURL}=require("../utils/helper")
 
 // Initialize Firebase
 // const analytics = getAnalytics(appFire);
 //  const storage = getStorage(appFire)
-
 
 const Event = require("../models/Event");
 const Register = require("../models/Register");
@@ -51,23 +45,17 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     //   .promise();
     const { data, error } = await supabase.storage
       .from("srishti")
-      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer,{
+      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
         cacheControl: "3600",
         upsert: true,
       });
     if (error) {
       console.error("Error uploading file:", error.message);
-    } else {
-      console.log("File uploaded successfully:", data.Key);
-
-      // Construct the URL using the data returned from the upload
-      const baseUrl =
-        "https://lkefjyhyetaykbxencgg.supabase.co/storage/v1/object/public/srishti/";
-      const fileUrl = baseUrl + encodeURIComponent(data.path);
-      console.log("File URL:", fileUrl);
+      throw new Error(error.message);
     }
+    
+    const downloadUrl = getDownloadURL(data.path);
 
-    console.log(data);
     // console.log(response);
     // console.log("hi");
     const EventData = await Event.create({
@@ -76,7 +64,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       time: req.body.time,
       club: req.body.clubId,
       clubName: req.body.clubName,
-      image: "ms",
+      image: downloadUrl,
       desc: req.body.desc,
       date: req.body.date,
       time: req.body.time,

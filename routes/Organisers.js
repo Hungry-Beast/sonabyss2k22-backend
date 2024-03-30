@@ -8,6 +8,8 @@ const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const User = require("../models/User");
 const Organisers = require("../models/Organisers");
+const supabase = require("../supabase");
+const { getDownloadURL } = require("../utils/helper");
 
 router.post("/", multer().single("file"), async (req, res) => {
   try {
@@ -19,12 +21,18 @@ router.post("/", multer().single("file"), async (req, res) => {
       contentType: req.file.mimetype,
       name: req.file.originalname,
     };
-    // storage.put(req.file.buffer, metadata);
-    // }
-    const storageRef = ref(storage, `${req.file.originalname}`);
-    const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
-    // console.log("hi");
+    const { data, error } = await supabase.storage
+      .from("srishti")
+      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    if (error) {
+      console.error("Error uploading file:", error.message);
+      throw new Error(error.message);
+    }
+
+    const downloadUrl = getDownloadURL(data.path);
     const organiser = await Organisers.create({
       name: req.body.name,
       regNo: req.body.regNo,
@@ -34,8 +42,7 @@ router.post("/", multer().single("file"), async (req, res) => {
       linkedin: req.body.linkedin,
       insta: req.body.insta,
       fb: req.body.fb,
-      github: req.body.github
-
+      github: req.body.github,
     });
     res.json(organiser);
   } catch (error) {
@@ -56,7 +63,16 @@ router.get("/", async (req, res) => {
   const Cosplay = await Organisers.find({ group: 10 });
 
   res.json([
-    Developers, Creative_Head, PubAndBrand, StageIncharge, SonabyssIncharge, Hospitality, Media, Org_secy, Auditor, Cosplay
+    Developers,
+    Creative_Head,
+    PubAndBrand,
+    StageIncharge,
+    SonabyssIncharge,
+    Hospitality,
+    Media,
+    Org_secy,
+    Auditor,
+    Cosplay,
   ]);
 });
 
