@@ -1,14 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} = require("firebase/storage");
-// const app=require('../firebaseAuth')
-const storage = getStorage();
+// const { uploadFile } = require("../aws");
+// const { S3 } = require("aws-sdk");
+const dotenv = require("dotenv");
+dotenv.config();
+const { createClient } = require("@supabase/supabase-js");
+
+const supabase = createClient(
+  "https://lkefjyhyetaykbxencgg.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrZWZqeWh5ZXRheWtieGVuY2dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMTgyNzkwMiwiZXhwIjoyMDI3NDAzOTAyfQ.fT_mp1QeCcKFYYl1blbIVMZVbdyeA9VNw0BhiJGJeqU"
+);
+
+
+// Initialize Firebase
+// const analytics = getAnalytics(appFire);
+//  const storage = getStorage(appFire)
+
 
 const Event = require("../models/Event");
 const Register = require("../models/Register");
@@ -24,30 +32,51 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       res.status(206).send("Please insert a image");
       return;
     }
-    // let metadata = {
-    //   contentType: req.file.mimetype,
-    //   name: req.file.originalname,
-    // };
-    // console.log(req.file)
+    let metadata = {
+      contentType: req.file.mimetype,
+      name: req.file.originalname,
+    };
     // storage.put(req.file.buffer, metadata);
     // }
-    const storageRef = ref(storage, `/abc`);
-    // const snapshot = await uploadBytes(storageRef, req.file.buffer);
-    const bytes = new Uint8Array([
-      0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64,
-      0x21,
-    ]);
-    const snapshot = await uploadBytes(storageRef, bytes)
+    // const fileContent = fs.readFileSync(localFilePath);
+    // const updateFileName = fileName.split("\\").join("/");
+    // console.log("updated", updateFileName);
+    // return;
+    // const response = await s3
+    //   .upload({
+    //     Body: req.file.buffer,
+    //     Bucket: "srishti",
+    //     Key: `${req.file.originalname}`,
+    //   })
+    //   .promise();
+    const { data, error } = await supabase.storage
+      .from("srishti")
+      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer,{
+        cacheControl: "3600",
+        upsert: true,
+      });
+    if (error) {
+      console.error("Error uploading file:", error.message);
+    } else {
+      console.log("File uploaded successfully:", data.Key);
 
-    console.log(snapshot);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
+      // Construct the URL using the data returned from the upload
+      const baseUrl =
+        "https://lkefjyhyetaykbxencgg.supabase.co/storage/v1/object/public/srishti/";
+      const fileUrl = baseUrl + encodeURIComponent(data.path);
+      console.log("File URL:", fileUrl);
+    }
+
+    console.log(data);
+    // console.log(response);
+    // console.log("hi");
     const EventData = await Event.create({
       name: req.body.name,
       date: req.body.date,
       time: req.body.time,
       club: req.body.clubId,
       clubName: req.body.clubName,
-      image: "ajja",
+      image: "ms",
       desc: req.body.desc,
       date: req.body.date,
       time: req.body.time,
@@ -136,9 +165,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             clubName: event.clubName,
             venue: event.venue,
             club: event.club,
-            disabled:
-              (outsider && !event.isOpen ? true : false) ||
-              (event.disabled ? true : false),
+            disabled: outsider && !event.isOpen ? true : false,
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
             qrCode: event.isPaid ? club.qrCode : null,
@@ -158,9 +185,7 @@ router.get("/:id", fetchuser, async (req, res) => {
             clubName: event.clubName,
             venue: event.venue,
             club: event.club,
-            disabled:
-              (outsider && !event.isOpen ? true : false) ||
-              (event.disabled ? true : false),
+            disabled: outsider && !event.isOpen ? true : false,
             isPaid: event.isPaid,
             price: outsider ? event.priceO : event.priceN,
             qrCode: event.isPaid ? club.qrCode : null,
@@ -271,7 +296,6 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     });
     console.log(event.isMainEvent);
     const club = await Club.findById(event.club);
-
     // console.log(club)
     // if (!registeration) {
     //   res.status(206).json({ error: "Please give a valid registration id" });
@@ -292,9 +316,7 @@ router.get("/event/:id", fetchuser, async (req, res) => {
       clubName: event.clubName,
       venue: event.venue,
       club: event.club,
-      disabled:
-        (outsider && !event.isOpen ? true : false) ||
-        (event.disabled ? true : false),
+      disabled: outsider && !event.isOpen ? true : false,
       isPaid: event.isPaid,
       price: outsider ? event.priceO : event.priceN,
       isVerified: registeration?.isVerified,
@@ -355,17 +377,6 @@ router.get("/event/noAuth/:id", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.put("/disable/:id", fetchAdmin, async (req, res) => {
-  try {
-    const event = await Event.findByIdAndUpdate(req.params.id, {
-      disabled: true,
-    });
-    res.send("Disabled");
-  } catch (error) {
-    res.status(404).status({ error: "Something went crazy" });
   }
 });
 

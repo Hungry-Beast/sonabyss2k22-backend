@@ -1,12 +1,10 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-require("./firebaseAuth");
 const mongoConnect = require("./db");
 const Club = require("./routes/Club");
 const Event = require("./routes/Event");
 const Register = require("./routes/Register");
-const SendMessage = require("./routes/SendMessage");
 const Auth = require("./routes/auth");
 const Organisers = require("./routes/Organisers");
 var path = require("path");
@@ -24,7 +22,6 @@ app.use(cors());
 app.use("/clubs", Club);
 app.use("/events", Event);
 app.use("/registration", Register);
-app.use("/send", SendMessage);
 app.use("/auth", Auth);
 app.use("/organisers", Organisers);
 

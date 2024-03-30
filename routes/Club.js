@@ -1,13 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} = require("firebase/storage");
-const storage = getStorage();
 
 const Club = require("../models/Club");
 const fetchUser = require("../middleware/fetchuser");

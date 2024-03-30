@@ -1,19 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} = require("firebase/storage");
-const storage = getStorage();
 
 const Event = require("../models/Event");
 const Register = require("../models/Register");
 const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
-const { async } = require("@firebase/util");
 const User = require("../models/User");
 const Organisers = require("../models/Organisers");
 

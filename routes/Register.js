@@ -1,13 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} = require("firebase/storage");
-const storage = getStorage();
 
 const Register = require("../models/Register");
 const Event = require("../models/Event");
@@ -15,8 +8,6 @@ const User = require("../models/User");
 
 const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
-const pdfMake = require("pdfmake/build/pdfmake.js");
-const pdfFonts = require("pdfmake/build/vfs_fonts.js");
 const TransactionId = require("../models/TransactionId");
 // const fetchuser = require("../middleware/fetchuser");
 
