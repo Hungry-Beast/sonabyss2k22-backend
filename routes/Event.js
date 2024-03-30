@@ -31,8 +31,14 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     // console.log(req.file)
     // storage.put(req.file.buffer, metadata);
     // }
-    const storageRef =  ref(storage, `${req.file.originalname}`);
-    const snapshot = await uploadBytes(storageRef, req.file.buffer)
+    const storageRef = ref(storage, `/abc`);
+    // const snapshot = await uploadBytes(storageRef, req.file.buffer);
+    const bytes = new Uint8Array([
+      0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64,
+      0x21,
+    ]);
+    const snapshot = await uploadBytes(storageRef, bytes)
+
     console.log(snapshot);
     const downloadUrl = await getDownloadURL(snapshot.ref);
     const EventData = await Event.create({
@@ -258,7 +264,6 @@ router.get("/event/:id", fetchuser, async (req, res) => {
     if (!event) {
       res.status(206).json({ error: "Please give a valid event id" });
     }
-    
 
     const registeration = await Register.findOne({
       eventId: id,
