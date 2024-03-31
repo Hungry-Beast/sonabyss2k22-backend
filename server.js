@@ -9,7 +9,7 @@ const Auth = require("./routes/auth");
 const Organisers = require("./routes/Organisers");
 var path = require("path");
 var public = path.join(__dirname, "");
-// require('./routes/Test')
+
 var bodyParser = require("body-parser");
 mongoConnect();
 
