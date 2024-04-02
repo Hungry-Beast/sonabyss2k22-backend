@@ -7,35 +7,70 @@ const fetchUser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 
 const supabase = require("../supabase");
-const {getDownloadURL}=require("../utils/helper")
+const { getDownloadURL } = require("../utils/helper");
+const { BlobServiceClient } = require("@azure/storage-blob");
+const { v4 } = require("uuid");
+
+
+
+
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
   try {
+    console.log('hi')
     let metadata = {
       contentType: req.file.mimetype,
       name: req.file.originalname,
     };
-    // storage.put(req.file.buffer, metadata);
+
+
+    //supabse code
+
+    // const { data, error } = await supabase.storage
+    //   .from("srishti")
+    //   .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
+    //     cacheControl: "3600",
+    //     upsert: true,
+    //   });
+    // if (error) {
+    //   console.error("Error uploading file:", error.message);
+    //   throw new Error(error.message);
     // }
-    const { data, error } = await supabase.storage
-    .from("srishti")
-    .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-  if (error) {
-    console.error("Error uploading file:", error.message);
-    throw new Error(error.message);
-  }
-  
-  const downloadUrl = getDownloadURL(data.path);
+
+    // const downloadUrl = getDownloadURL(data.path);
     // console.log(req.user);
+
+
+    //azure upload
+    const sasToken = process.env.sasToken
+    const storageName = 'llm1041430350'
+    const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
+    // Create a unique name for the blob
+    const containerName = 'shristi-images';
+    const blobName = v4() + req.file.originalname;
+
+
+    // Get a reference to a container
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    // Get a block blob client
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    // Upload data to the blob
+    await blockBlobClient.upload(req.file.buffer, req.file.buffer.length, metadata)
+
+    const downloadUrl = blockBlobClient.url
+
+
+    // club creation
     const ClubData = await Club.create({
       name: req.body.name,
       image: downloadUrl,
       desc: req.body.desc,
       createdBy: req.user.id,
     });
-    res.json(ClubData);
+
+    res.status(200).json(ClubData);
+    // res.status(200).send('uploaded!')
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Internal server error!");
@@ -43,7 +78,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
 });
 router.delete("/delete/:id", fetchAdmin, async (req, res) => {
   try {
-    const club=await Club.findById(req.params.id)
+    const club = await Club.findById(req.params.id)
     // console.log(club)
     // return res.status(200)
     const isDeleted = await Club.findByIdAndDelete(req.params.id);
@@ -74,7 +109,7 @@ router.put(
   [fetchAdmin, multer().single("file")],
   async (req, res) => {
     try {
-      
+
       let metadata = {
         contentType: req.file.mimetype,
         name: req.file.originalname,

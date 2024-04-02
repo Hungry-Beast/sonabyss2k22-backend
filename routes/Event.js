@@ -6,7 +6,7 @@ const multer = require("multer");
 const dotenv = require("dotenv");
 dotenv.config();
 const supabase = require("../supabase");
-const {getDownloadURL}=require("../utils/helper")
+const { getDownloadURL } = require("../utils/helper")
 
 // Initialize Firebase
 // const analytics = getAnalytics(appFire);
@@ -18,6 +18,8 @@ const fetchuser = require("../middleware/fetchuser");
 const fetchAdmin = require("../middleware/fetchAdmin");
 const User = require("../models/User");
 const Club = require("../models/Club");
+const { BlobServiceClient } = require("@azure/storage-blob");
+const { v4 } = require("uuid");
 // const { events } = require("../models/Event");
 
 router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
@@ -30,6 +32,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       contentType: req.file.mimetype,
       name: req.file.originalname,
     };
+    console.log('hi')
     // storage.put(req.file.buffer, metadata);
     // }
     // const fileContent = fs.readFileSync(localFilePath);
@@ -43,18 +46,44 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
     //     Key: `${req.file.originalname}`,
     //   })
     //   .promise();
-    const { data, error } = await supabase.storage
-      .from("srishti")
-      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
-        cacheControl: "3600",
-        upsert: true,
-      });
-    if (error) {
-      console.error("Error uploading file:", error.message);
-      throw new Error(error.message);
-    }
-    
-    const downloadUrl = getDownloadURL(data.path);
+
+
+    // const { data, error } = await supabase.storage
+    //   .from("srishti")
+    //   .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
+    //     cacheControl: "3600",
+    //     upsert: true,
+    //   });
+    // if (error) {
+    //   console.error("Error uploading file:", error.message);
+    //   throw new Error(error.message);
+    // }
+
+    // const downloadUrl = getDownloadURL(data.path);
+
+
+
+    //azure upload
+    const sasToken = process.env.sasToken
+    const storageName = 'llm1041430350'
+    const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
+    // Create a unique name for the blob
+    const containerName = 'shristi-images';
+    const blobName = v4() + req.file.originalname;
+
+
+    // Get a reference to a container
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    // Get a block blob client
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    // Upload data to the blob
+    await blockBlobClient.upload(req.file.buffer, req.file.buffer.length, metadata)
+
+    const downloadUrl = blockBlobClient.url
+
+
 
     // console.log(response);
     // console.log("hi");
@@ -141,45 +170,45 @@ router.get("/:id", fetchuser, async (req, res) => {
     events.map((event) => {
       event.isMainEvent
         ? resMainEvents.push({
-            id: event._id,
-            name: event.name,
-            date: event.date,
-            time: event.time,
-            club: event.clubId,
-            clubName: event.clubName,
-            image: event.image,
-            desc: event.desc,
-            isRegistered: event.user.includes(req.user.id),
-            clubName: event.clubName,
-            venue: event.venue,
-            club: event.club,
-            disabled: outsider && !event.isOpen ? true : false,
-            isPaid: event.isPaid,
-            price: outsider ? event.priceO : event.priceN,
-            qrCode: event.isPaid ? club.qrCode : null,
-            upi: event.isPaid ? club.upi : null,
-            phoneNo: event.isPaid ? club.phoneNo : null,
-          })
+          id: event._id,
+          name: event.name,
+          date: event.date,
+          time: event.time,
+          club: event.clubId,
+          clubName: event.clubName,
+          image: event.image,
+          desc: event.desc,
+          isRegistered: event.user.includes(req.user.id),
+          clubName: event.clubName,
+          venue: event.venue,
+          club: event.club,
+          disabled: outsider && !event.isOpen ? true : false,
+          isPaid: event.isPaid,
+          price: outsider ? event.priceO : event.priceN,
+          qrCode: event.isPaid ? club.qrCode : null,
+          upi: event.isPaid ? club.upi : null,
+          phoneNo: event.isPaid ? club.phoneNo : null,
+        })
         : resPreEvents.push({
-            id: event._id,
-            name: event.name,
-            date: event.date,
-            time: event.time,
-            club: event.clubId,
-            clubName: event.clubName,
-            image: event.image,
-            desc: event.desc,
-            isRegistered: event.user.includes(req.user.id),
-            clubName: event.clubName,
-            venue: event.venue,
-            club: event.club,
-            disabled: outsider && !event.isOpen ? true : false,
-            isPaid: event.isPaid,
-            price: outsider ? event.priceO : event.priceN,
-            qrCode: event.isPaid ? club.qrCode : null,
-            upi: event.isPaid ? club.upi : null,
-            phoneNo: event.isPaid ? club.phoneNo : null,
-          });
+          id: event._id,
+          name: event.name,
+          date: event.date,
+          time: event.time,
+          club: event.clubId,
+          clubName: event.clubName,
+          image: event.image,
+          desc: event.desc,
+          isRegistered: event.user.includes(req.user.id),
+          clubName: event.clubName,
+          venue: event.venue,
+          club: event.club,
+          disabled: outsider && !event.isOpen ? true : false,
+          isPaid: event.isPaid,
+          price: outsider ? event.priceO : event.priceN,
+          qrCode: event.isPaid ? club.qrCode : null,
+          upi: event.isPaid ? club.upi : null,
+          phoneNo: event.isPaid ? club.phoneNo : null,
+        });
     });
     res.json([resPreEvents, resMainEvents]);
   } catch (error) {
@@ -217,13 +246,26 @@ router.put(
           contentType: req.file.mimetype,
           name: req.file.originalname,
         };
-        const storageRef = ref(storage, `${req.file.originalname}`);
-        const snapshot = await uploadBytes(
-          storageRef,
-          req.file.buffer,
-          metadata
-        );
-        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        //azure upload
+        const sasToken = process.env.sasToken
+        const storageName = 'llm1041430350'
+        const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
+        // Create a unique name for the blob
+        const containerName = 'shristi-images';
+        const blobName = v4() + req.file.originalname;
+
+
+        // Get a reference to a container
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+
+        // Get a block blob client
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+        // Upload data to the blob
+        await blockBlobClient.upload(req.file.buffer, req.file.buffer.length, metadata)
+
+        const downloadUrl = blockBlobClient.url
         newEvent.image = downloadUrl;
       }
 
@@ -368,26 +410,6 @@ router.get("/event/noAuth/:id", async (req, res) => {
   }
 });
 
-// router.get('/getalldetails/:id', async (req, res) => {
-//   try {
-//     const id = req.params.id
-//     console.log(id)
-//     if (!id) {
-//       {
-//         res.status(206).json({ error: "Please give a valid event id" });
-//       }
-//       const event = await Event.find({ club: id })
-//       console.log(event)
-//       if (!event) {
-//         res.status(206).json({ error: "Please give a valid event id" });
-//       }
-//       res.json(event);
-//       console.log('called')
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// })
+
 
 module.exports = router;

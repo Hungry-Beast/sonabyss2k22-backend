@@ -27,18 +27,43 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
         contentType: req.file.mimetype,
         name: req.file.originalname,
       };
-      const { data, error } = await supabase.storage
-        .from("srishti")
-        .upload(`${req.file.originalname}`, req.file.buffer, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-      if (error) {
-        console.error("Error uploading file:", error.message);
-        throw new Error(error.message);
-      }
 
-      const downloadUrl = getDownloadURL(data.path);
+
+      // const { data, error } = await supabase.storage
+      //   .from("srishti")
+      //   .upload(`${req.file.originalname}`, req.file.buffer, {
+      //     cacheControl: "3600",
+      //     upsert: true,
+      //   });
+      // if (error) {
+      //   console.error("Error uploading file:", error.message);
+      //   throw new Error(error.message);
+      // }
+      //  downloadUrl = getDownloadURL(data.path);
+
+
+
+
+      //azure upload
+      const sasToken = process.env.sasToken
+      const storageName = 'llm1041430350'
+      const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
+      // Create a unique name for the blob
+      const containerName = 'shristi-images';
+      const blobName = v4() + req.file.originalname;
+
+
+      // Get a reference to a container
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+
+      // Get a block blob client
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+      // Upload data to the blob
+      await blockBlobClient.upload(req.file.buffer, req.file.buffer.length, metadata)
+
+      downloadUrl = blockBlobClient.url
+
     }
     const userData = await User.findById(req.user.id);
     if (userData && userData.userType === "o" && !event.isOpen) {
@@ -76,7 +101,7 @@ router.get("/:id", fetchAdmin, async (req, res) => {
   try {
     const registeration = await Register.find({ eventId: req.params.id });
     res.json(registeration);
-  } catch (error) {}
+  } catch (error) { }
 });
 
 router.put("/verify/:id", fetchAdmin, async (req, res) => {

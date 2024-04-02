@@ -11,6 +11,7 @@ const fetchuser = (req, res, next) => {
 
   if (!token) {
     //in case of invalid token
+
     res.status(401).send({ error: "Please authenticate using a valid token!" });
   }
   try {
