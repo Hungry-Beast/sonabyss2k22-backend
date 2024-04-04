@@ -32,7 +32,7 @@ router.post("/", [fetchAdmin, multer().single("file")], async (req, res) => {
       contentType: req.file.mimetype,
       name: req.file.originalname,
     };
-    console.log('hi')
+
     // storage.put(req.file.buffer, metadata);
     // }
     // const fileContent = fs.readFileSync(localFilePath);
@@ -152,6 +152,8 @@ router.get("/noAuth/:id", async (req, res) => {
   }
 });
 
+
+//get registered events by a user
 router.get("/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
   try {
@@ -210,6 +212,8 @@ router.get("/:id", fetchuser, async (req, res) => {
           phoneNo: event.isPaid ? club.phoneNo : null,
         });
     });
+
+
     res.json([resPreEvents, resMainEvents]);
   } catch (error) {
     console.log(error);
@@ -233,6 +237,8 @@ router.delete("/delete/:id", fetchAdmin, async (req, res) => {
     res.status(404).send("Event not found...");
   }
 });
+
+
 
 router.put(
   "/edit/:id",
@@ -306,6 +312,8 @@ router.put(
     }
   }
 );
+
+//get single by id
 router.get("/event/:id", fetchuser, async (req, res) => {
   // console.log(req.params);
   try {

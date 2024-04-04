@@ -17,7 +17,7 @@ const fetchuser = (req, res, next) => {
   try {
     const data = jwt.verify(token, JWT_SECRET); //verify and get the user
     req.user = data.user;
-    // console.log(data.user)
+    // console.log(data.user, 'from middleware')
     next();
     // The next() function is not a part of the Node.js or Express API but is the third argument that is passed to the middleware function. This means that the async (req, res) will be called after getting the user in the ‘getuser’ route.
   } catch (error) {

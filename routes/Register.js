@@ -15,7 +15,7 @@ const { getDownloadURL } = require("../utils/helper");
 
 router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
   try {
-    let downloadUrl;
+    let downloadUrl = '';
     const event = await Event.findById(req.body.eventId);
     if (event.user && event.user.includes(req.user.id)) {
       return res
@@ -27,24 +27,6 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
         contentType: req.file.mimetype,
         name: req.file.originalname,
       };
-
-
-      // const { data, error } = await supabase.storage
-      //   .from("srishti")
-      //   .upload(`${req.file.originalname}`, req.file.buffer, {
-      //     cacheControl: "3600",
-      //     upsert: true,
-      //   });
-      // if (error) {
-      //   console.error("Error uploading file:", error.message);
-      //   throw new Error(error.message);
-      // }
-      //  downloadUrl = getDownloadURL(data.path);
-
-
-
-
-      //azure upload
       const sasToken = process.env.sasToken
       const storageName = 'llm1041430350'
       const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
@@ -64,17 +46,21 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
 
       downloadUrl = blockBlobClient.url
 
+      //azure upload
+
     }
+    // console.log(req.user)
     const userData = await User.findById(req.user.id);
+    // console.log(userData)
     if (userData && userData.userType === "o" && !event.isOpen) {
       return res.status(404).json({ error: "Not allowed to register" });
     }
     if (event.disabled) {
       return res.status(404).json({ error: "Registration is closed" });
     }
-    console.log(event);
+    // console.log(event);
 
-    console.log("hi");
+    // console.log("hi");
     const register = await Register.create({
       name: userData.name,
       regNo: userData.regNo,
@@ -84,7 +70,7 @@ router.post("/", [fetchUser, multer().single("file")], async (req, res) => {
       clubName: req.body.clubName,
       eventId: req.body.eventId,
       eventName: req.body.eventName,
-      screenshot: downloadUrl,
+      screenshot: downloadUrl ? downloadUrl : '',
       isPaid: event.isPaid,
     });
 
@@ -111,7 +97,7 @@ router.put("/verify/:id", fetchAdmin, async (req, res) => {
         transactionId: req.body.transactionId,
       });
       const user = await User.findById(req.user.id);
-      console.log(isAlready);
+      // console.log(isAlready);
       if (isAlready) {
         res.status(400).json({ error: "Transaction Id is not unique" });
         return;

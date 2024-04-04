@@ -32,7 +32,30 @@ router.post("/", multer().single("file"), async (req, res) => {
       throw new Error(error.message);
     }
 
-    const downloadUrl = getDownloadURL(data.path);
+
+
+    //azure upload
+    const sasToken = process.env.sasToken
+    const storageName = 'llm1041430350'
+    const blobServiceClient = new BlobServiceClient(`https://${storageName}.blob.core.windows.net/?${sasToken}`)
+    // Create a unique name for the blob
+    const containerName = 'shristi-images';
+    const blobName = v4() + req.file.originalname;
+
+
+    // Get a reference to a container
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    // Get a block blob client
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    // Upload data to the blob
+    await blockBlobClient.upload(req.file.buffer, req.file.buffer.length, metadata)
+
+    const downloadUrl = blockBlobClient.url
+
+
+    // const downloadUrl = getDownloadURL(data.path);
     const organiser = await Organisers.create({
       name: req.body.name,
       regNo: req.body.regNo,
