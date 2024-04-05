@@ -76,29 +76,24 @@ router.post("/", multer().single("file"), async (req, res) => {
   }
 });
 router.get("/", async (req, res) => {
-  const Developers = await Organisers.find({ group: 1 });
-  const Creative_Head = await Organisers.find({ group: 2 });
-  const PubAndBrand = await Organisers.find({ group: 3 });
-  const StageIncharge = await Organisers.find({ group: 4 });
-  const SonabyssIncharge = await Organisers.find({ group: 5 });
-  const Hospitality = await Organisers.find({ group: 6 });
-  const Media = await Organisers.find({ group: 7 });
-  const Org_secy = await Organisers.find({ group: 8 });
-  const Auditor = await Organisers.find({ group: 9 });
-  const Cosplay = await Organisers.find({ group: 10 });
+  // const Developers = await Organisers.find({ group: 1 });
+  // const Creative_Head = await Organisers.find({ group: 2 });
+  // const PubAndBrand = await Organisers.find({ group: 3 });
+  // const StageIncharge = await Organisers.find({ group: 4 });
+  // const SonabyssIncharge = await Organisers.find({ group: 5 });
+  // const Hospitality = await Organisers.find({ group: 6 });
+  // const Media = await Organisers.find({ group: 7 });
+  // const Org_secy = await Organisers.find({ group: 8 });
+  // const Auditor = await Organisers.find({ group: 9 });
+  // const Cosplay = await Organisers.find({ group: 10 });
+  try {
+    const organisers = await Organisers.find()
+    res.status(200).json(organisers);
 
-  res.json([
-    Developers,
-    Creative_Head,
-    PubAndBrand,
-    StageIncharge,
-    SonabyssIncharge,
-    Hospitality,
-    Media,
-    Org_secy,
-    Auditor,
-    Cosplay,
-  ]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error!");
+  }
 });
 
 module.exports = router;
