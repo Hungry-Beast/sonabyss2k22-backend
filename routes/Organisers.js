@@ -10,6 +10,8 @@ const User = require("../models/User");
 const Organisers = require("../models/Organisers");
 const supabase = require("../supabase");
 const { getDownloadURL } = require("../utils/helper");
+const { BlobServiceClient } = require("@azure/storage-blob");
+const { v4 } = require("uuid");
 
 router.post("/", multer().single("file"), async (req, res) => {
   try {
@@ -21,16 +23,16 @@ router.post("/", multer().single("file"), async (req, res) => {
       contentType: req.file.mimetype,
       name: req.file.originalname,
     };
-    const { data, error } = await supabase.storage
-      .from("srishti")
-      .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
-        cacheControl: "3600",
-        upsert: true,
-      });
-    if (error) {
-      console.error("Error uploading file:", error.message);
-      throw new Error(error.message);
-    }
+    // const { data, error } = await supabase.storage
+    //   .from("srishti")
+    //   .upload(`${req.body.name}-${req.file.originalname}`, req.file.buffer, {
+    //     cacheControl: "3600",
+    //     upsert: true,
+    //   });
+    // if (error) {
+    //   console.error("Error uploading file:", error.message);
+    //   throw new Error(error.message);
+    // }
 
 
 
