@@ -42,13 +42,17 @@ router.post(
       }
       const salt = await bcrypt.genSalt(10);
       const secPassword = await bcrypt.hash(req.body.password, salt);
-      user = await User.create({
+      const tempUserData = {
         name: req.body.name,
         password: secPassword,
         phoneNo: req.body.phoneNo,
-        regNo,
+
         userType: req.body.userType === "s" ? "s" : "o",
-      });
+      }
+      if (req.body?.regNo) {
+        tempUserData.regNo = req.body.regNo
+      }
+      user = await User.create(tempUserData);
       const data = {
         user: {
           id: user.id,
@@ -64,6 +68,7 @@ router.post(
 
       res.json({ success, authToken, ...userData.toObject() });
     } catch (err) {
+      console.log(err)
       success = false;
       console.error(err.message);
       res.status(400).json({ success, error: "Internal error occured" });
@@ -80,8 +85,12 @@ router.post("/login", async (req, res) => {
   }
   const { regNo, password, phoneNo } = req.body;
   const obj = regNo ? { regNo: regNo } : { phoneNo: phoneNo };
+  const isAdminReq = req.query.admin;
   // console.log(obj);
   const user = await User.findOne(obj);
+  if (isAdminReq && user.userType !== "a") {
+    return res.status(403).json({ message: "Not an admin account" })
+  }
   // console.log(user);
   try {
     // console.log(JWT_SECRET);
