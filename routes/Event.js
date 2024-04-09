@@ -139,7 +139,6 @@ router.get("/:id", fetchuser, async (req, res) => {
     const resPreEvents = [];
     const resMainEvents = [];
     events.map((event) => {
-      if (event.disabled) return;
       event.isMainEvent
         ? resMainEvents.push({
           id: event._id,
